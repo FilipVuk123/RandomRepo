@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 class Timer:
-    def __init__(self, font_size = 60, bg_color = "black", font_color = "white"):
+    def __init__(self, font_size = 180, bg_color = "black", font_color = "white"):
         self.root = tk.Tk(className=' ')
         self.font_size = font_size
         self.bg_color = bg_color
@@ -22,10 +22,10 @@ class Timer:
         self.root.destroy()
 
     def make_widgets(self):
-        tk.Label(self.root, textvariable=self.sv, font=('ariel 15', self.font_size), pady=200, bg = self.bg_color ,fg= self.font_color).pack()
-        
+        tk.Label(self.root, textvariable=self.sv, font=('ariel 15', self.font_size), pady=300, bg = self.bg_color ,fg= self.font_color).pack()
         btn_frame = tk.Frame(self.root)
         btn_frame.pack()
+        self.start()
         tk.Button(btn_frame, text='        ', bg = "green", command=self.start).pack()
         tk.Button(btn_frame, text='        ', command=self.stop).pack()
         tk.Button(btn_frame, text='        ', bg = "red", command=self.close).pack()
