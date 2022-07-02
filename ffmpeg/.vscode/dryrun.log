@@ -1,0 +1,9 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/vegvisir/Desktop/Filip/VegvisirHardware/EncoderDecoderJetson/ffmpeg'
+mkdir -p bin/obj
+gcc  -Iinclude -pipe -pedantic -g -Wall -Wextra -O3 -ffast-math -c src/video_decoder.c -o bin/obj/video_decoder.o
+gcc  -Iinclude -pipe -pedantic -g -Wall -Wextra -O3 -ffast-math -c src/video_encoder.c -o bin/obj/video_encoder.o
+gcc  -Iinclude -pipe -pedantic -g -Wall -Wextra -O3 -ffast-math -c src/main.c -o bin/obj/main.o
+gcc   bin/obj/video_decoder.o bin/obj/video_encoder.o bin/obj/main.o -lavformat -lavcodec -lavutil -lm  -o bin/EncoderDecoder
+make: Leaving directory '/home/vegvisir/Desktop/Filip/VegvisirHardware/EncoderDecoderJetson/ffmpeg'
+ 
