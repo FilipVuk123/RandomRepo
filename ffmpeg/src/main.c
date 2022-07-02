@@ -5,7 +5,7 @@
 int main()
 {
     int width = 1280, height = 720;
-    FILE *inputfptr = fopen("/home/vegvisir/Desktop/Filip/VegvisirHardware/frame_data/in_out720.yuv", "rb");
+    FILE *inputfptr = fopen("out720.yuv", "rb");
     if (inputfptr == NULL){
         printf("Could not open file 1\n");
         return 1;  
@@ -33,7 +33,7 @@ int main()
 
     orqa_clock_t start = orqa_time_now();
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
         int size = encode(&enc, inputbuffer);
         if(size < 0) goto destroy;
