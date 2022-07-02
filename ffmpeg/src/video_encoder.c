@@ -70,9 +70,9 @@ int encoder_init(encoder_t *enc, const int width, const int height){
 
     if (enc->codec->id == AV_CODEC_ID_H264){
         ret = av_opt_set(enc->pCodecCtx->priv_data, "tune", "zerolatency", 0);
-        if (ret != 0)
-            printf("Could not set av_opt_set()\n");
+        if (ret != 0) printf("Could not set av_opt_set()\n");
     }
+    av_log_set_level(AV_LOG_FATAL);
 
     /* open it */
     ret = avcodec_open2(enc->pCodecCtx, enc->codec, NULL);
