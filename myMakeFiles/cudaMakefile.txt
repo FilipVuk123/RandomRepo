@@ -1,0 +1,39 @@
+NVCC=nvcc
+CXX=g++
+NVCCFLAGS := -Iinclude
+CXXFLAGS := -Iinclude
+LDFLAGS  := -lcuda
+LDLIBS   := -L/usr/local/cuda-10.2/lib64
+
+SRC_DIR:=src
+BIN_DIR:=bin
+OBJ_DIR:=bin/obj
+
+EXE:=$(BIN_DIR)/Vegvisir
+NVCCSRC:=$(wildcard $(SRC_DIR)/*.cu)
+SRCCXX:=$(wildcard $(SRC_DIR)/*.cpp)
+OBJ:=$(patsubst $(SRC_DIR)/%.cu, $(OBJ_DIR)/%.o, $(NVCCSRC))
+OBJ+=$(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCCXX))
+
+
+.PHONY: all
+
+all: $(EXE)
+
+$(EXE): $(OBJ)
+	$(NVCC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cu | $(OBJ_DIR)
+	$(NVCC) $(NVCCFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BIN_DIR) $(OBJ_DIR):
+	mkdir -p $@
+.PHONY: clean
+clean:
+	rm  -r bin/*
+.PHONY: start
+start:
+	./bin/Vegvisir

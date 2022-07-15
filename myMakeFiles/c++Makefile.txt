@@ -1,0 +1,39 @@
+CC=gcc 
+CXX=g++
+CFLAGS   := -Iinclude -I/opt/KAYA_Instruments/include -g -O3 -ffast-math -pipe -pedantic -Wall -Wextra
+CXXFLAGS := -Iinclude -I/opt/pleora/ebus_sdk/linux-aarch64-arm/include -I/opt/pleora/ebus_sdk/linux-aarch64-arm/share/samples -std=c++11
+LDFLAGS  := -L/opt/KAYA_Instruments/lib -Wl,-rpath,/opt/KAYA_Instruments/lib -Wl,-rpath,'$ORIGIN' -L/opt/pleora/ebus_sdk/linux-aarch64-arm/lib -L/opt/pleora/ebus_sdk/linux-aarch64-arm/lib/genicam/bin/Linux64_ARM
+LDLIBS   := -lKYFGLib -lz -lavformat -lavcodec -lavutil -lm -ldl -lglfw -lpthread -lPvAppUtils -lPtConvertersLib -lPvBase -lPvBuffer -lPvGenICam -lPvSystem -lPvStream -lPvDevice -lPvTransmitter -lPvVirtualDevice -lPvPersistence -lPvSerial -lPvCameraBridge
+
+SRC_DIR:=src
+BIN_DIR:=bin
+OBJ_DIR:=bin/obj
+
+EXE:=$(BIN_DIR)/Vegvisir
+SRC:=$(wildcard $(SRC_DIR)/*.c)
+SRCCXX:=$(wildcard $(SRC_DIR)/*.cpp)
+OBJ:=$(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+OBJ+=$(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCCXX))
+
+
+.PHONY: all
+
+all: $(EXE)
+
+$(EXE): $(OBJ)
+	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BIN_DIR) $(OBJ_DIR):
+	mkdir -p $@
+.PHONY: clean
+clean:
+	rm  -r bin/*
+.PHONY: start
+start:
+	./bin/Vegvisir
