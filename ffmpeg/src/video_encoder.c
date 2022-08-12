@@ -58,15 +58,17 @@ int encoder_init(encoder_t *enc, const int width, const int height){
         return 1;
     }
 
-
     enc->pCodecCtx->bit_rate = 2000000;
     enc->pCodecCtx->width = width;
     enc->pCodecCtx->height = height;
-    enc->pCodecCtx->time_base = (AVRational){1, 60};
-    enc->pCodecCtx->framerate = (AVRational){60, 1};
+    enc->pCodecCtx->time_base = (AVRational){1, 30};
+    enc->pCodecCtx->framerate = (AVRational){30, 1};
     enc->pCodecCtx->gop_size = 20;
     enc->pCodecCtx->max_b_frames = 0;
     enc->pCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
+    enc->pCodecCtx->slices = 1;
+    enc->pCodecCtx->thread_type = FF_THREAD_FRAME;
+    enc->pCodecCtx->thread_count = 1;
 
     if (enc->codec->id == AV_CODEC_ID_H264){
         ret = av_opt_set(enc->pCodecCtx->priv_data, "tune", "zerolatency", 0);

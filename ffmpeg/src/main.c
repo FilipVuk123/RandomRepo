@@ -33,19 +33,19 @@ int main()
 
     orqa_clock_t start = orqa_time_now();
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
     {
         int size = encode(&enc, inputbuffer);
         if(size < 0) goto destroy;
         if(enc.encoder_flag){
-            // fwrite(enc.encoded_buffer, enc.size, 1, outputfptr);
+            fwrite(enc.encoded_buffer, enc.size, 1, outputfptr);
             size = decode(&dec, enc.encoded_buffer, enc.size);
             if(size < 0) goto destroy;
             enc.encoder_flag = 0;
         }
         if (dec.decoder_flag)
         {
-            // fwrite(dec.decoded_buffer, dec.size, 1, fp_yuv);
+            fwrite(dec.decoded_buffer, dec.size, 1, fp_yuv);
             dec.decoder_flag = 0;
         }
     }
