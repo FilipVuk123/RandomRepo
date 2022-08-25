@@ -5,8 +5,8 @@ extern "C"
 #include "orqa_window.h"
 }
 #include <stdio.h>
-#include <opencv2/objdetect.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/objdetect.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <iostream>
@@ -19,8 +19,8 @@ using namespace cv;
 const GLuint SCR_WIDTH = 1920;
 const GLuint SCR_HEIGHT = 1080;
 
-const GLuint width = 960;
-const GLuint height = 540;
+const GLuint width = 1280;
+const GLuint height = 720;
 
 const GLfloat vertices[] = {
     // pisitions         // texture coords
@@ -45,7 +45,7 @@ int main(int argc, const char **argv)
 {
     signal(SIGINT, intHandler);
 
-    double scale = 4.0;
+    double scale = 3.0;
     VideoCapture cap(0);
 
     if (!cap.isOpened())
@@ -55,7 +55,7 @@ int main(int argc, const char **argv)
     }
 
     CascadeClassifier cascade;
-    cascade.load("home/filip/opencv-4.x/data/haarcascades/haarcascade_fullbody.xml");
+    cascade.load("/home/filip/opencv-4.x/data/haarcascades/haarcascade_frontalface_alt.xml");
 
     orqa_set_error_cb(orqa_error_cb);
 
@@ -98,11 +98,15 @@ int main(int argc, const char **argv)
     orqa_enable_vertex_attrib_array(posLoc, 3, GL_FLOAT, 5 * sizeof(float), (float *)0);
     orqa_enable_vertex_attrib_array(texLoc, 2, GL_FLOAT, 5 * sizeof(float), (void *)(3 * sizeof(float)));
 
+    Mat test_frame;
+    cap >> test_frame;
+    printf("%d, %d \n", test_frame.size().width, test_frame.size().height);
+
     // texture init
     GLuint *textures = orqa_create_textures(2);
     // loading image!
     orqa_bind_texture(textures[0]);
-    orqa_generate_texture_from_buffer(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    orqa_generate_texture_from_buffer(GL_TEXTURE_2D, GL_RGB, test_frame.size().width, test_frame.size().height, GL_BGR, GL_UNSIGNED_BYTE, NULL);
 
 
     while (keepRunning)
@@ -114,7 +118,7 @@ int main(int argc, const char **argv)
         Mat frame;
         cap >> frame;
 
-        Mat grayscale;
+        Mat grayscale; 
         cvtColor(frame, grayscale, COLOR_BGR2GRAY);
         resize(grayscale, grayscale, Size(grayscale.size().width / scale, grayscale.size().height / scale));
         vector < Rect > people;
@@ -128,8 +132,9 @@ int main(int argc, const char **argv)
 
         // imshow("WebCam feed", frame);
         orqa_bind_texture(textures[0]);
+        orqa_generate_texture_from_buffer(GL_TEXTURE_2D, GL_RGB, test_frame.size().width, test_frame.size().height, GL_BGR, GL_UNSIGNED_BYTE, frame.ptr());
 
-        orqa_update_texture_from_buffer(GL_TEXTURE_2D, 0,0, width, height, GL_RGB, GL_UNSIGNED_INT, frame.ptr());
+        // orqa_update_texture_from_buffer(GL_TEXTURE_2D, 0,0, test_frame.size().width, test_frame.size().height, GL_BGR, GL_UNSIGNED_INT, frame.ptr());
 
         orqa_bind_vertex_object_and_draw_it(VAOs[0], GL_TRIANGLES, 6);
 
@@ -144,7 +149,7 @@ int main(int argc, const char **argv)
     orqa_delete_buffers(2, EBOs);
     orqa_delete_textures(2, textures);
     orqa_delete_program(shaderProgram);
-
+// 
     glfwTerminate(); // glfw: terminate, clearing all previously allocated GLFW resources.
     printf("\n\nProgram executed!\n");
     return 0;

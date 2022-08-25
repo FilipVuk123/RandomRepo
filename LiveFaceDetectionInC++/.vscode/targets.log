@@ -1,0 +1,471 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.2.1
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2016 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+ 
+
+# Make data base, printed on Thu Aug 25 15:46:57 2022
+
+# Variables
+
+# 'override' directive
+GNUMAKEFLAGS := 
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# environment
+DESKTOP_SESSION = ubuntu
+# default
+.SHELLFLAGS := -c
+# makefile (from 'Makefile', line 19)
+OBJ :=  bin/obj/main.o  bin/obj/orqa_clock.o  bin/obj/orqa_opengl.o  bin/obj/glad.o  bin/obj/orqa_window.o
+# environment
+XDG_SESSION_CLASS = user
+# environment
+SNAP_COMMON = /var/snap/code/common
+# environment
+XDG_SESSION_TYPE = x11
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# environment
+IM_CONFIG_PHASE = 1
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# environment
+XAUTHORITY = /run/user/1000/gdm/Xauthority
+# environment
+GDMSESSION = ubuntu
+# environment
+XMODIFIERS = @im=ibus
+# makefile
+CURDIR := /home/user/Downloads/LiveFaceDetectionInC++
+# makefile
+SHELL = /bin/sh
+# environment
+SNAP_DATA = /var/snap/code/105
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+JOURNAL_STREAM = 8:39758
+# makefile (from 'Makefile', line 4)
+CFLAGS := -Iinclude -I/usr/local/include/opencv4 -pipe -Wall -pedantic -g -Wextra
+# environment
+XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
+# environment
+SNAP_INSTANCE_NAME = code
+# environment
+SNAP_ARCH = amd64
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# automatic
+@F = $(notdir $@)
+# environment
+GIO_LAUNCHED_DESKTOP_FILE = /var/lib/snapd/desktop/applications/code_code.desktop
+# environment
+USERNAME = user
+# makefile (from 'Makefile', line 11)
+OBJ_DIR := bin/obj
+# makefile (from 'Makefile', line 5)
+CXXFLAGS := -Iinclude -I -I/usr/local/include/opencv4 `pkg-config --cflags opencv4` -Wall -O3 -ffast-math -Iinclude  -pipe -g -Wextra -pg
+# environment
+MAKELEVEL := 0
+# environment
+XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus,guid=226928472840117310aa1d4463077cb9
+# environment
+_ = /snap/code/105/usr/share/code/code
+# environment
+MANAGERPID = 985
+# environment
+LESSOPEN = | /usr/bin/lesspipe %s
+# environment
+LC_NAME = hr_HR.UTF-8
+# environment
+VSCODE_CWD = /home/user
+# environment
+GSETTINGS_SCHEMA_DIR = /snap/code/105/usr/share/glib-2.0/schemas
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# environment
+PATH = /home/user/.local/bin:/home/user/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+# environment
+GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
+# environment
+SESSION_MANAGER = local/user-Vostro-15-3510:@/tmp/.ICE-unix/1222,unix/user-Vostro-15-3510:/tmp/.ICE-unix/1222
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# environment
+GDK_PIXBUF_MODULE_FILE = /home/user/snap/code/common/.cache/gdk-pixbuf-loaders.cache
+# environment
+SNAP = /snap/code/105
+# makefile (from 'Makefile', line 15)
+SRCCXX := src/main.cpp
+# environment
+SNAP_VERSION = e4503b30
+# environment
+XDG_MENU_PREFIX = gnome-
+# environment
+DISABLE_WAYLAND = 1
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+INVOCATION_ID = bbb5d6dbef564de7a263ccbef7264dfb
+# makefile (from 'Makefile', line 6)
+LDFLAGS := -L/home/filip/open_cv_build/lib/ `pkg-config --cflags opencv4`
+# environment
+GDK_PIXBUF_MODULEDIR = /snap/code/105/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+# makefile (from 'Makefile', line 7)
+LDLIBS := -ldl -lm -lglfw `pkg-config --libs opencv4`
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+# environment
+LS_COLORS = 
+# environment
+XDG_SESSION_DESKTOP = ubuntu
+# environment
+SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
+# environment
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2630
+# automatic
+%F = $(notdir $%)
+# environment
+DISPLAY = :0
+# environment
+SNAP_INSTANCE_KEY = 
+# environment
+PWD = /home/user/Downloads/LiveFaceDetectionInC++
+# default
+.LOADED := 
+# environment
+SSH_AGENT_PID = 1179
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
+# makefile (from 'Makefile', line 9)
+SRC_DIR := src
+# environment
+GTK_MODULES = gail:atk-bridge
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /home/user
+# environment
+LESSCLOSE = /usr/bin/lesspipe %s %s
+# environment
+VSCODE_CLI = 1
+# environment
+VSCODE_CODE_CACHE_PATH = /home/user/.config/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
+# environment
+LOGNAME = user
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
+# environment
+SNAP_CONTEXT = nHx8XP3DnlvmDRjlo7mdV73lV2pFeXj0IdqkCzcG3CXDSegISu_Q
+# automatic
++F = $(notdir $+)
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+SNAP_USER_COMMON = /home/user/snap/code/common
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# environment
+GNOME_DESKTOP_SESSION_ID = this-is-deprecated
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+LC_TIME = hr_HR.UTF-8
+# environment
+SNAP_REAL_HOME = /home/user
+# makefile (from 'Makefile', line 16)
+SRCC := src/orqa_clock.c src/orqa_opengl.c src/glad.c src/orqa_window.c
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+QT_IM_MODULE = ibus
+# environment
+SNAP_USER_DATA = /home/user/snap/code/105
+# environment
+SHLVL = 0
+# makefile (from 'Makefile', line 3)
+CC = gcc
+# environment
+GNOME_SHELL_SESSION_MODE = ubuntu
+# default
+MAKE_VERSION := 4.2.1
+# environment
+USER = user
+# environment
+SNAP_REVISION = 105
+# environment
+LC_MONETARY = hr_HR.UTF-8
+# makefile
+.DEFAULT_GOAL := all
+# environment
+XDG_CURRENT_DESKTOP = Unity
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+LC_TELEPHONE = hr_HR.UTF-8
+# default
+MAKE_COMMAND := make
+# default
+.VARIABLES := 
+# automatic
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /run/user/1000/vscode-16068fa4-1.70.2-main.sock
+# environment
+BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
+# makefile
+MAKEFLAGS = pqrR
+# environment
+MFLAGS = -pqrR
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# environment
+GDK_BACKEND = x11
+# environment
+LC_PAPER = hr_HR.UTF-8
+# environment
+QT_ACCESSIBILITY = 1
+# default
+MAKEFILES := 
+# environment
+SNAP_COOKIE = nHx8XP3DnlvmDRjlo7mdV73lV2pFeXj0IdqkCzcG3CXDSegISu_Q
+# environment
+LC_NUMERIC = hr_HR.UTF-8
+# automatic
+<F = $(notdir $<)
+# makefile (from 'Makefile', line 2)
+CXX = g++ 
+# environment
+LC_MEASUREMENT = hr_HR.UTF-8
+# environment
+SNAP_NAME = code
+# makefile (from 'Makefile', line 10)
+BIN_DIR := bin
+# environment
+LC_ALL = C
+# environment
+DBUS_STARTER_BUS_TYPE = session
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# environment
+SNAP_REEXEC = 
+# environment
+CHROME_DESKTOP = code-url-handler.desktop
+# environment
+WINDOWPATH = 2
+# default
+.INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
+# environment
+LC_IDENTIFICATION = hr_HR.UTF-8
+# default
+.RECIPEPREFIX := 
+# makefile (from 'Makefile', line 13)
+EXE := bin/LiveFaceRecognition
+# environment
+LC_ADDRESS = hr_HR.UTF-8
+# environment
+LANG = C
+# environment
+VSCODE_PID = 2678
+# environment
+DBUS_STARTER_ADDRESS = unix:path=/run/user/1000/bus,guid=226928472840117310aa1d4463077cb9
+# variable set hash-table stats:
+# Load=137/1024=13%, Rehash=0, Collisions=43/184=23%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 66306, inode 11423438): 9 files, no impossibilities.
+# bin (device 66306, inode 11423464): No files, no impossibilities so far.
+ 
+# src (device 66306, inode 11423439): 7 files, no impossibilities.
+
+# 16 files, no impossibilities in 3 directories.
+
+# Implicit Rules
+
+bin/obj/%.o: src/%.cpp | bin/obj
+#  recipe to execute (from 'Makefile', line 29):
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+bin/obj/%.o: src/%.c | bin/obj
+#  recipe to execute (from 'Makefile', line 32):
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# 2 implicit rules, 0 (0.0%) terminal.
+
+# Files
+
+bin/obj/orqa_clock.o: src/orqa_clock.c | bin/obj
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'orqa_clock'
+#  Last modified 2022-08-25 15:46:01.210298675
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 32):
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Not a target:
+src/orqa_opengl.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-03 16:40:47
+#  File has been updated.
+#  Successfully updated.
+
+all: bin/LiveFaceRecognition
+#  Phony target (prerequisite of .PHONY).
+#  Command line target.
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has been updated.
+#  Successfully updated.
+
+bin:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 35):
+	mkdir -p $@
+
+.PHONY: all clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/obj/glad.o: src/glad.c | bin/obj
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'glad'
+#  Last modified 2022-08-25 15:46:02.50261338
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 32):
+	$(CC) $(CFLAGS) -c $< -o $@
+
+bin/obj/main.o: src/main.cpp | bin/obj
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'main'
+#  Last modified 2022-08-25 15:46:01.182291777
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 29):
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-25 15:45:57.253249882
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+src/orqa_clock.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-03 16:40:47
+#  File has been updated.
+#  Successfully updated.
+
+bin/obj/orqa_window.o: src/orqa_window.c | bin/obj
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'orqa_window'
+#  Last modified 2022-08-25 15:46:02.554625814
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 32):
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Not a target:
+src/glad.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-03 16:40:47
+#  File has been updated.
+#  Successfully updated.
+
+bin/obj:
+#  Implicit rule search has not been done.
+#  Last modified 2022-08-25 15:46:02.506614337
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 35):
+	mkdir -p $@
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/orqa_window.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-03 16:40:47
+#  File has been updated.
+#  Successfully updated.
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 38):
+	rm  -r bin/*
+
+# Not a target:
+src/main.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-25 14:54:15.376145588
+#  File has been updated.
+#  Successfully updated.
+
+bin/obj/orqa_opengl.o: src/orqa_opengl.c | bin/obj
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'orqa_opengl'
+#  Last modified 2022-08-25 15:46:01.726425801
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 32):
+	$(CC) $(CFLAGS) -c $< -o $@
+
+bin/LiveFaceRecognition: bin/obj/main.o bin/obj/orqa_clock.o bin/obj/orqa_opengl.o bin/obj/glad.o bin/obj/orqa_window.o
+#  Implicit rule search has not been done.
+#  Last modified 2022-08-25 15:46:36.862581505
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 26):
+	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+# files hash-table stats:
+# Load=19/1024=2%, Rehash=0, Collisions=0/70=0%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 45 / storage = 526 B / avg = 11 B
+# current buf: size = 8162 B / used = 526 B / count = 45 / avg = 11 B
+
+# strcache performance: lookups = 84 / hit rate = 46%
+# hash-table stats:
+# Load=45/8192=1%, Rehash=0, Collisions=2/84=2%
+# Finished Make data base on Thu Aug 25 15:46:57 2022
+
+ 

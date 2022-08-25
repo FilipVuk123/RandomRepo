@@ -1,8 +1,8 @@
 
 CXX=g++ 
 CC=gcc
-CFLAGS := -Iinclude  -pipe -Wall -pedantic -g -Wextra
-CXXFLAGS := -Iinclude -I  -Wall -O3 -ffast-math -Iinclude  -pipe -g -Wextra -pg
+CFLAGS := -Iinclude -I/usr/local/include/opencv -pipe -Wall -pedantic -g -Wextra
+CXXFLAGS := -Iinclude -I -I/usr/local/include/opencv `pkg-config --cflags opencv` -Wall -O3 -ffast-math -Iinclude  -pipe -g -Wextra -pg
 LDFLAGS  := -L/home/filip/open_cv_build/lib/ `pkg-config --cflags opencv`
 LDLIBS   := -ldl -lm -lglfw `pkg-config --libs opencv`
 
@@ -19,7 +19,6 @@ OBJ:=$(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCCXX))
 OBJ+=$(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCC))
 
 .PHONY: all
-
 all: $(EXE)
 
 $(EXE): $(OBJ)
@@ -33,6 +32,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 
 $(BIN_DIR) $(OBJ_DIR):
 	mkdir -p $@
+
 .PHONY: clean
 clean:
 	rm  -r bin/*
