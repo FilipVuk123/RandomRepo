@@ -2,9 +2,9 @@
 CXX=g++ 
 CC=gcc
 CFLAGS := -Iinclude  -pipe -Wall -pedantic -g -Wextra
-CXXFLAGS := -I/usr/local/include/opencv4/ -Iinclude -I `pkg-config --cflags opencv` -Wall -O3 -ffast-math -Iinclude  -pipe -g -Wextra -pg
-LDFLAGS  := -L/usr/local/cuda-10.2/lib64 `pkg-config --libs opencv`
-LDLIBS   := -ldl -lm -lglfw
+CXXFLAGS := -Iinclude -I  -Wall -O3 -ffast-math -Iinclude  -pipe -g -Wextra -pg
+LDFLAGS  := -L/home/filip/open_cv_build/lib/ `pkg-config --cflags opencv`
+LDLIBS   := -ldl -lm -lglfw `pkg-config --libs opencv`
 
 SRC_DIR:=src
 BIN_DIR:=bin
