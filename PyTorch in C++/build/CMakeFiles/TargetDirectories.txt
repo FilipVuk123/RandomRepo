@@ -1,0 +1,3 @@
+/home/filip/Desktop/RandomRepo/PyTorch in C++/build/CMakeFiles/rebuild_cache.dir
+/home/filip/Desktop/RandomRepo/PyTorch in C++/build/CMakeFiles/edit_cache.dir
+/home/filip/Desktop/RandomRepo/PyTorch in C++/build/CMakeFiles/example-app.dir
