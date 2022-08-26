@@ -22,7 +22,7 @@ CXXFLAGS := -Iinclude \
 			-I/home/filip/opencv_build \
 
 LDFLAGS  := `pkg-config --cflags opencv` -L/home/filip/opencv_build/lib
-LDLIBS   := -ldl -lm -lglfw -L/home/filip/opencv_build/lib `pkg-config --libs opencv` -L/home/filip/opencv_build/lib -lopencv_dnn
+LDLIBS   := -ldl -lm -lglfw -L/home/filip/opencv_build/lib `pkg-config --libs opencv` -L/home/filip/opencv_build/lib -lopencv_dnn -lavcodec -lavformat -lavutil
  
 SRC_DIR:=src
 BIN_DIR:=bin
