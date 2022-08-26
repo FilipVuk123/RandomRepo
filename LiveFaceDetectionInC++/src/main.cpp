@@ -45,7 +45,7 @@ int main(int argc, const char **argv)
 {
     signal(SIGINT, intHandler);
 
-    double scale = 3.0;
+    double scale = 2.0;
     VideoCapture cap(0);
 
     if (!cap.isOpened())
@@ -108,7 +108,6 @@ int main(int argc, const char **argv)
     orqa_bind_texture(textures[0]);
     orqa_generate_texture_from_buffer(GL_TEXTURE_2D, GL_RGB, test_frame.size().width, test_frame.size().height, GL_BGR, GL_UNSIGNED_BYTE, NULL);
 
-
     while (keepRunning)
     {
         // render
@@ -122,15 +121,14 @@ int main(int argc, const char **argv)
         cvtColor(frame, grayscale, COLOR_BGR2GRAY);
         resize(grayscale, grayscale, Size(grayscale.size().width / scale, grayscale.size().height / scale));
         vector < Rect > people;
-        cascade.detectMultiScale(grayscale, people, 1.1, 3, 0, Size(50,50)); 
+        cascade.detectMultiScale(grayscale, people, 1.1, 3, 0, Size(10,10)); 
 
         for (Rect area : people)
         {
             Scalar drawColor = Scalar(0, 0, 0);
-            rectangle(frame, Point(cvRound(area.x * scale), cvRound(area.y * scale)), Point(cvRound((area.x + area.width -1) * scale), cvRound((area.y + area.height -1) * scale)), drawColor);
+            rectangle(frame, Point(cvRound(area.x * scale), cvRound(area.y * scale)), Point(cvRound((area.x + area.width -1) * scale), cvRound((area.y + area.height -1) * scale)), drawColor, 2);
         }
 
-        // imshow("WebCam feed", frame);
         orqa_bind_texture(textures[0]);
         orqa_generate_texture_from_buffer(GL_TEXTURE_2D, GL_RGB, test_frame.size().width, test_frame.size().height, GL_BGR, GL_UNSIGNED_BYTE, frame.ptr());
 

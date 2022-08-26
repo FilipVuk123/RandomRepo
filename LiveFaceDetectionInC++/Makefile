@@ -1,11 +1,11 @@
 
 CXX=g++ 
 CC=gcc
-CFLAGS := -Iinclude -I/usr/local/include/opencv -pipe -Wall -pedantic -g -Wextra
-CXXFLAGS := -Iinclude -I -I/usr/local/include/opencv `pkg-config --cflags opencv` -Wall -O3 -ffast-math -Iinclude  -pipe -g -Wextra -pg
-LDFLAGS  := -L/home/filip/open_cv_build/lib/ `pkg-config --cflags opencv`
-LDLIBS   := -ldl -lm -lglfw `pkg-config --libs opencv`
-
+CFLAGS   := -Iinclude -pipe -Wall -pedantic -g -Wextra 
+CXXFLAGS := -Iinclude -I/home/filip/opencv-4.x/include -I/home/filip/opencv-4.x/modules/core/include -I/home/filip/opencv-4.x/modules/video/include -I/home/filip/opencv-4.x/modules/stitching/include -I/home/filip/opencv-4.x/modules/ml/include -I/home/filip/opencv-4.x/modules/photo/include -I/home/filip/opencv-4.x/modules/flann/include -I/home/filip/opencv-4.x/modules/features2d/include -I/home/filip/opencv-4.x/modules/calib3d/include -I/home/filip/opencv-4.x/modules/dnn/include -I/home/filip/opencv-4.x/modules/core/include -I/home/filip/opencv-4.x/modules/imgproc/include -I/home/filip/opencv-4.x/modules/objdetect/include -I/home/filip/opencv-4.x/modules/videoio/include -I/home/filip/opencv-4.x/modules/imgcodecs/include -I/home/filip/opencv_build -I/home/filip/opencv-4.x/modules/highgui/include -Wall -pipe -g -Wextra -pg 
+LDFLAGS  := `pkg-config --cflags opencv` -L/home/filip/opencv_build/lib
+LDLIBS   := -ldl -lm -lglfw -L/home/filip/opencv_build/lib `pkg-config --libs opencv` -L/home/filip/opencv_build/lib -lopencv_dnn
+ 
 SRC_DIR:=src
 BIN_DIR:=bin
 OBJ_DIR:=bin/obj
