@@ -14,7 +14,6 @@ extern "C"
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include <pthread.h>
 
 using namespace std;
 using namespace cv;
@@ -45,6 +44,20 @@ void intHandler(int dummy)
     keepRunning = 0;
 }
 double scale = 2.0;
+
+void detect_face_opencv_cascades(CascadeClassifier cascade, Mat *frame){
+    Mat grayscale;
+    cvtColor(*frame, grayscale, COLOR_BGR2GRAY);
+    resize(grayscale, grayscale, Size(grayscale.size().width / scale, grayscale.size().height / scale));
+    vector < Rect > people;
+    cascade.detectMultiScale(grayscale, people, 1.1, 3, 0, Size(20,20));
+
+    for (Rect area : people)
+    {
+        Scalar drawColor = Scalar(0, 0, 0);
+        rectangle(*frame, Point(cvRound(area.x * scale), cvRound(area.y * scale)), Point(cvRound((area.x + area.width -1) * scale), cvRound((area.y + area.height -1) * scale)), drawColor, 2);
+    }
+}
 
 
 
@@ -122,17 +135,8 @@ int main(int argc, const char **argv)
 
         Mat frame;
         cap >> frame;
-        Mat grayscale;
-        cvtColor(frame, grayscale, COLOR_BGR2GRAY);
-        resize(grayscale, grayscale, Size(grayscale.size().width / scale, grayscale.size().height / scale));
-        vector < Rect > people;
-        cascade.detectMultiScale(grayscale, people, 1.1, 3, 0, Size(20,20));
 
-        for (Rect area : people)
-        {
-            Scalar drawColor = Scalar(0, 0, 0);
-            rectangle(frame, Point(cvRound(area.x * scale), cvRound(area.y * scale)), Point(cvRound((area.x + area.width -1) * scale), cvRound((area.y + area.height -1) * scale)), drawColor, 2);
-        }
+        detect_face_opencv_cascades(cascade, &frame);
 
         orqa_bind_texture(textures[0]);
         orqa_generate_texture_from_buffer(GL_TEXTURE_2D, GL_RGB, test_frame.size().width, test_frame.size().height, GL_BGR, GL_UNSIGNED_BYTE, frame.ptr());
@@ -165,7 +169,6 @@ int main(int argc, const char **argv)
 /*=================================================================================================================================================================*/
 
 #if 0
-
 extern "C"
 {
 #include "orqa_clock.h"
@@ -216,16 +219,16 @@ const std::string caffeWeightFile = "/home/filip/opencv-4.x/samples/dnn/face_det
 const std::string tensorflowConfigFile = "/home/filip/opencv-4.x/samples/dnn/face_detector/opencv_face_detector.pbtxt";
 const std::string tensorflowWeightFile = "/home/filip/opencv-4.x/samples/dnn/face_detector/opencv_face_detector_uint8.pb";
 
-void detectFaceOpenCVDNN(Net net, Mat &frame)
+void detectFaceOpenCVDNN(Net net, Mat *frame)
 {
-    int frameHeight = frame.rows;
-    int frameWidth = frame.cols;
+    int frameHeight = frame->rows;
+    int frameWidth = frame->cols;
 
 
 #ifdef CAFFE
-    Mat inputBlob = blobFromImage(frame, 1.0, Size(640, 480), meanVal, false, false);
+    Mat inputBlob = blobFromImage(*frame, 1.0, Size(300, 300), meanVal, false, false);
 #else
-    Mat inputBlob = blobFromImage(frame, 1.0, Size(640, 480), meanVal, true, false);
+    Mat inputBlob = blobFromImage(*frame, 1.0, Size(300, 300), meanVal, true, false);
 #endif
 
     net.setInput(inputBlob, "data");
@@ -245,7 +248,7 @@ void detectFaceOpenCVDNN(Net net, Mat &frame)
             int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
             int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
             
-            rectangle(frame, Point(x1, y1), Point(x2, y2), Scalar(0, 255, 0), 2, 4);
+            rectangle(*frame, Point(x1, y1), Point(x2, y2), Scalar(0, 255, 0), 2, 4);
         }
     }
 }
@@ -331,7 +334,7 @@ int main(int argc, char **argv)
         orqa_clear_color_buffer(0.2f, 0.2f, 0.2f, 1.0f);
         orqa_clear_buffer(GL_COLOR_BUFFER_BIT);
 
-        detectFaceOpenCVDNN(net, frame);
+        detectFaceOpenCVDNN(net, &frame);
 
         orqa_bind_texture(textures[0]);
         printf("%d, %d\n", frame.size().width, frame.size().height);

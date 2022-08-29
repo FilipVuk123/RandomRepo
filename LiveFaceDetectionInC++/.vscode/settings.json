@@ -3,6 +3,7 @@
     "C_Cpp.errorSquiggles": "Enabled",
     "files.associations": {
         "array": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "iostream": "cpp"
     }
 }
