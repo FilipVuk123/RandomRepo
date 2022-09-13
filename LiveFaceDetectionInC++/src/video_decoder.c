@@ -37,6 +37,7 @@ int decoder_init(decoder_t *dec, const int width, const int height)
 	}
 	dec->decoded_buffer = malloc(width * height * 3 / 2);
 	dec->size = width * height * 3 / 2;
+	dec->decoder_flag = 0;
 	return 0;
 }
 int decode(decoder_t *dec, uint8_t *buffer_to_decode, const int size)
