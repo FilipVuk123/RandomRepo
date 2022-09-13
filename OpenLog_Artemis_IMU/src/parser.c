@@ -26,7 +26,7 @@ int parse_line(parser_t *parser) {
       parse_sensor_info(parser, state->line);
     } else {
       // state->line is log data
-      printf("%s", state->line);
+      // printf("%s", state->line);
       parse_log_data(parser, state->line);
 
       return 1;

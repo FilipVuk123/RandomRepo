@@ -34,6 +34,10 @@ int main()
 	{
 		/* Parse sensor logged data */
 		next_log_data(bus, parser);
+		printf("a: %f, %f, %f, g: %f, %f, %f, m: %f, %f, %f\n", 
+			parser->state->aX, parser->state->aY, parser->state->aZ, 
+			parser->state->gX, parser->state->gY, parser->state->gZ, 
+			parser->state->mX, parser->state->mY, parser->state->mZ);
 
 		/* Save it to csv file */
 		// log_line_to_csv(csv_file, parser);
