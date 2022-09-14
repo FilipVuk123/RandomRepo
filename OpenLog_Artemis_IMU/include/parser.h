@@ -55,22 +55,6 @@ void parse_log_data(parser_t *parser, char * data);
  */
 void next_log_data(serial_bus_t *bus, parser_t *parser);
 
-
-/*
- * Parses one value of sensor logged data as a string starting 
- * at index pointing with i. It parses everything until it finds ','
- * which indicates that new value starts next. After the function call
- * index i points at the first character of the next value (one after ',').
- */
-char *parse_unit(char const *const data, int *i); 
-
-/*
- * Parses unit of sensor logged data and stores it in a buffer.
- */
-void parse_float(char const *const data, int *i, float *buffer);
-void parse_int(char const *const data, int *i, int *buffer);
-void parse_string(char const *const data, int *i, char *buffer);
-
 /*
  * Logs a parsed line whose values are stored in parser->state.
  */ 

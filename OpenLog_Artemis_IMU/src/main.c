@@ -59,13 +59,25 @@ int main()
 		/* Save it to csv file */
 		// log_line_to_csv(csv_file, parser);
 
+		/*-------------------------------------*/
 		// Where is north?
 		
 		// computing just from Magnetometer
 		// float heading = atan2(parser->state->mY, parser->state->mX) * 180 / M_PI;
+		// printf("%f -> ", heading);
+		// if(heading>= -45 && heading<= 45){
+		// 	printf("N\n");
+		// }else if(heading>= 45 && heading<= 135){
+		// 	printf("E\n");
+		// }else if(heading<= -45 && heading>= -135){
+		// 	printf("W\n");
+		// }else{
+		// 	printf("S\n");
+		// }
 		
+
 		// computing from both Magnetometer and Accelerometer
-		float newHeading = computeHeading(parser->state->mX,parser->state->mY, parser->state->mZ, parser->state->aX, parser->state->aY, parser->state->aZ);
+		float newHeading = computeHeading(parser->state->mX, parser->state->mY, parser->state->mZ, parser->state->aX, parser->state->aY, parser->state->aZ);
 		printf("%f -> ", newHeading);
 		if(newHeading >= -45 && newHeading <= 45){
 			printf("N\n");
@@ -76,8 +88,9 @@ int main()
 		}else{
 			printf("S\n");
 		}
+
 		
-		
+		/*-------------------------------------*/
 		// Euler angles?
 	}
 

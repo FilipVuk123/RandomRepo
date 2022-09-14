@@ -67,7 +67,7 @@ void parse_log_data(parser_t *parser, char *data)
   
   char* end;
 
-  // parsing date and time
+  // parsing date and time MM/DD/YYYY + HH:MM:SS.SSS -> 6 numbers
   for (int i = 0; i < 6; i++){
     strtof(data, &end);
     data = end + 1;
@@ -113,8 +113,7 @@ void parse_log_data(parser_t *parser, char *data)
   }
   
   // GPS part
-  // the below values are always 0 for some reason
-
+  // parsing date and time MM/DD/YYYY + HH:MM:SS.SSS -> 6 numbers
   for (int i = 0; i < 6; i++){
     strtof(data, &end);
     data = end + 1;
@@ -177,44 +176,6 @@ void next_log_data(serial_bus_t *bus, parser_t *parser)
     }
   }
 }
-
-// char *parse_unit(char const *const data, int *i)
-// {
-//   int n = 0;
-//   while (data[*i + n] != ',')
-//     n++;
-
-//   char *unit = malloc(n * sizeof(char));
-//   memcpy(unit, &data[*i], n);
-
-//   (*i) += n + 1;
-
-//   return unit;
-// }
-
-// void parse_float(char const *const data, int *i, float *buffer)
-// {
-//   char *unit = parse_unit(data, i);
-//   sscanf(unit, "%f", buffer);
-
-//   free(unit);
-// }
-
-// void parse_int(char const *const data, int *i, int *buffer)
-// {
-//   char *unit = parse_unit(data, i);
-//   sscanf(unit, "%i", buffer);
-
-//   free(unit);
-// }
-
-// void parse_string(char const *const data, int *i, char *buffer)
-// {
-//   char *unit = parse_unit(data, i);
-//   sscanf(unit, "%s", buffer);
-
-//   free(unit);
-// }
 
 void log_line_to_csv(FILE *file, parser_t *parser)
 {
