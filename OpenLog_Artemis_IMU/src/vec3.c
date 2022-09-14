@@ -19,13 +19,6 @@ vec3 add_vec3(const vec3 a, const vec3 b){
     return to_return;
 }
 
-vec3 mult_vec3(const vec3 a, const vec3 b){
-    vec3 to_return;
-    to_return.x = a.x * b.x;
-    to_return.y = a.y * b.y;
-    to_return.z = a.z * b.z;
-    return to_return;
-}
 
 vec3 sub_vec3(const vec3 a, const vec3 b){
     vec3 to_return;
