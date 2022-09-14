@@ -22,13 +22,14 @@ void intHandler(int dummy) {
     keepRunning = 0;
 }
 
-double computeHeading(double mag_x, double mag_y, double mag_z, double accel_x, double accel_y, double accel_z)
-    {
-        const vec3 vector_mag = create_vec3(mag_x, mag_y, mag_z);
-        const vec3 vector_down = create_vec3(accel_x, accel_y, accel_z);
-        const vec3 vector_north = sub_vec3 (vector_mag , scale_vec3((dot_vec3(vector_mag,vector_down) / dot_vec3(vector_down, vector_down)), vector_down));
-        return atan2(vector_north.x, vector_north.y) * 180 / M_PI;
-    }
+float computeHeading(double mag_x, double mag_y, double mag_z, double accel_x, double accel_y, double accel_z)
+{
+    const vec3 vector_mag = create_vec3(mag_x, mag_y, mag_z);
+    const vec3 vector_down = create_vec3(accel_x, accel_y, accel_z);
+	const float scale = dot_vec3(vector_mag,vector_down) / dot_vec3(vector_down, vector_down);
+    const vec3 vector_north = sub_vec3 (vector_mag , scale_vec3(scale, vector_down));
+    return atan2(vector_north.x, vector_north.y) * 180 / M_PI;
+}
 
 int main()
 {
@@ -66,11 +67,11 @@ int main()
 		// computing from both Magnetometer and Accelerometer
 		float newHeading = computeHeading(parser->state->mX,parser->state->mY, parser->state->mZ, parser->state->aX, parser->state->aY, parser->state->aZ);
 		printf("%f -> ", newHeading);
-		if(newHeading >= -45 && newHeading < 45){
+		if(newHeading >= -45 && newHeading <= 45){
 			printf("N\n");
-		}else if(newHeading >= 45 && newHeading < 135){
+		}else if(newHeading >= 45 && newHeading <= 135){
 			printf("E\n");
-		}else if(newHeading <= -45 && newHeading > -135){
+		}else if(newHeading <= -45 && newHeading >= -135){
 			printf("W\n");
 		}else{
 			printf("S\n");
