@@ -63,7 +63,8 @@ void configure_tty_settings(struct termios *tty) {
 }
 
 void write_to_bus(serial_bus_t *bus, char const *const msg) {
-	write(bus->serial_port, msg, strlen(msg));
+	size_t n = write(bus->serial_port, msg, strlen(msg));
+  (void)(n);
 }
 
 int read_from_bus(serial_bus_t *bus) {

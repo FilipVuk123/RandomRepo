@@ -45,7 +45,7 @@ void parse_sensor_info(parser_t *parser, char const *const sensor_info);
  * First two values are not important as they are local date and time of IMU.
  * We use correct date and time of GPS.
  */ 
-void parse_log_data(parser_t *parser, char const *const data);
+void parse_log_data(parser_t *parser, char * data);
 
 
 /*
