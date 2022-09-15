@@ -3,19 +3,20 @@
 
 #include "bus.h"
 
-typedef struct {
-  /* 
-   * How much bytes of data has been parsed so far for current line. 
-   * It resets back to 0 when parsing of new line starts. 
+typedef struct
+{
+  /*
+   * How much bytes of data has been parsed so far for current line.
+   * It resets back to 0 when parsing of new line starts.
    */
   int line_len;
-  
+
   /* Line being parsed. */
   char line[1000];
 
-  /* 
-   * IMU logging values, for more details see: 
-   * https://github.com/sparkfun/OpenLog_Artemis/blob/main/SENSOR_UNITS.md#ICM-20948-IMU 
+  /*
+   * IMU logging values, for more details see:
+   * https://github.com/sparkfun/OpenLog_Artemis/blob/main/SENSOR_UNITS.md#ICM-20948-IMU
    */
 
   /* Accelerometer */
@@ -28,28 +29,27 @@ typedef struct {
   float mX, mY, mZ;
 
   /* Temperature */
-  float imu_degC; 
-
+  float imu_degC;
 
   /*
    * GPS logging values, for more details see:
    * https://github.com/sparkfun/OpenLog_Artemis/blob/main/SENSOR_UNITS.md#u-blox-GNSS-boards
    */
 
-  /* 
-   * Date string in the format of MM/DD/YYYY. 
-   * Size is 11 because of an additional '\0' character. 
+  /*
+   * Date string in the format of MM/DD/YYYY.
+   * Size is 11 because of an additional '\0' character.
    */
   char gps_Date[11];
 
-  /* 
-   * Time string in the format of HH:MM:SS.SSS. 
-   * Size is 13 beause of an additional null-terminating character 
+  /*
+   * Time string in the format of HH:MM:SS.SSS.
+   * Size is 13 beause of an additional null-terminating character
    */
   char gps_Time[13];
 
-  /* 
-   * Latitude and Longitude. 
+  /*
+   * Latitude and Longitude.
    * It is stored as an angle with 7 digits of precision.
    */
   float gps_Lat, gps_Long;
@@ -89,7 +89,7 @@ state_t *create_state(void);
 
 /*
  * Frees up memory.
- */ 
+ */
 void delete_state(state_t *state);
 
 #endif // STATE_H

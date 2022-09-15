@@ -9,10 +9,9 @@
 #include "config.h"
 #include "parser.h"
 #include "state.h"
-#include "vec3.h"
 #include <signal.h>
-#include <math.h>
 #include <unistd.h>
+#include "imu.h"
 
 static volatile int keepRunning = 1;
 
@@ -22,16 +21,8 @@ void intHandler(int dummy)
 	keepRunning = 0;
 }
 
-float computeHeading(const float mag_x, const float mag_y, const float mag_z, const float accel_x, const float accel_y, const float accel_z)
-{
-	const vec3 vector_mag = create_vec3(mag_x, mag_y, mag_z);
-	const vec3 vector_down = create_vec3(accel_x, accel_y, accel_z);
-	const float scale = dot_vec3(vector_mag, vector_down) / dot_vec3(vector_down, vector_down) ? dot_vec3(vector_down, vector_down) != 0 : dot_vec3(vector_mag, vector_down);
-	const vec3 vector_north = sub_vec3(vector_mag, scale_vec3(scale, vector_down));
-	return atan2(vector_north.x, vector_north.y) * 180 / M_PI;
-}
 
-#define AVG_COUNT 5
+#define AVG_COUNT 15
 
 int main()
 {
@@ -115,14 +106,15 @@ int main()
 
 		double yaw, pitch, roll;
 
-		roll = atan(avg_aX / sqrt(avg_aY * avg_aY + avg_aZ * avg_aZ));
-		pitch = atan(avg_aY / sqrt(avg_aX * avg_aX + avg_aZ * avg_aZ));
+		roll = getRoll(avg_aX, avg_aY, avg_aZ);
 
-		yaw = atan2((avg_mY * cos(roll)) - (avg_mZ * sin(roll)),
-					(avg_mX * cos(pitch)) + (avg_mY * sin(roll) * sin(pitch)) + (avg_mZ * cos(roll) * sin(pitch)));
-		pitch = 180 * pitch / M_PI;
-		roll = 180 * roll / M_PI;
-		yaw = 180 * yaw / M_PI;
+		pitch = getPitch(avg_aX, avg_aY, avg_aZ);
+
+		yaw = getYaw(avg_mX, avg_mY, avg_mZ, roll, pitch);
+					
+		pitch = toDegrees(pitch);
+		roll = toDegrees(roll);
+		yaw = toDegrees(yaw);
 
 		printf("Roll: %f, Pitch: %f, Yaw: %f\n", roll, pitch, yaw);
 	}

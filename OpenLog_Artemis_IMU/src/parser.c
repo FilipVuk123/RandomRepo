@@ -28,7 +28,6 @@ int parse_line(parser_t *parser)
       state->line[state->line_len] = '\0';
       config->parsed_sensor_info = true;
       parse_sensor_info(parser, state->line);
-      printf("Here!\n");
     }
     else
     {
