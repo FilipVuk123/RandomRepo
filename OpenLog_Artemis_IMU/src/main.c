@@ -31,7 +31,7 @@ float computeHeading(const float mag_x, const float mag_y, const float mag_z, co
 	return atan2(vector_north.x, vector_north.y) * 180 / M_PI;
 }
 
-#define AVG_COUNT 15
+#define AVG_COUNT 30
 
 int main()
 {
@@ -42,6 +42,9 @@ int main()
 
 	parser_t *parser = create_parser();
 
+	double f_yaw = 0.0, f_pitch = 0.0, f_roll = 0.0;
+	int first = 1;
+
 	// FILE *csv_file = create_csv_file(); // when commented results in SEG FAULT
 
 	while (keepRunning)
@@ -50,6 +53,7 @@ int main()
 		/* Parse sensor logged data */
 		for (int i = 0; i < AVG_COUNT; i++)
 		{
+			if(!keepRunning) break;
 			next_log_data(bus, parser);
 			avg_aX += parser->state->aX;
 			avg_aY += parser->state->aY;
@@ -70,6 +74,8 @@ int main()
 		avg_mX /= AVG_COUNT;
 		avg_mY /= AVG_COUNT;
 		avg_mZ /= AVG_COUNT;
+
+		
 		printf("IMU : a: %f, %f, %f, g: %f, %f, %f, m: %f, %f, %f \n",
 			   avg_aX, avg_aY, avg_aZ,
 			   avg_gX, avg_gY, avg_gZ,
@@ -128,12 +134,21 @@ int main()
 		roll = atan (avg_aX/sqrt(avg_aY*avg_aY + avg_aZ*avg_aZ));
 		pitch = atan (avg_aY/sqrt(avg_aX*avg_aX + avg_aZ*avg_aZ));
 
-		float Yh = (avg_mY * cos(roll)) - (avg_mZ * sin(roll));
-   		float Xh = (avg_mX * cos(pitch))+(avg_mY* sin(roll)*sin(pitch)) + (avg_mZ * cos(roll) * sin(pitch));
-
-   		yaw =  180 * atan2(Yh, Xh) / M_PI;
+   		yaw = atan2((avg_mY * cos(roll)) - (avg_mZ * sin(roll)), (avg_mX * cos(pitch))+(avg_mY* sin(roll)*sin(pitch)) + (avg_mZ * cos(roll) * sin(pitch)));
 		pitch = 180* pitch / M_PI;
 		roll = 180* roll / M_PI;
+		yaw = 180*yaw / M_PI;
+
+		if(first){
+			first = 0;
+			f_yaw = yaw;
+			f_roll = roll;
+			f_pitch = pitch;		
+		}else{
+			yaw -= f_yaw;
+			roll -= f_roll;
+			pitch -= f_pitch;
+		}
 
 
 		printf("Roll: %f, Pitch: %f, Yaw: %f\n", roll, pitch, yaw);
