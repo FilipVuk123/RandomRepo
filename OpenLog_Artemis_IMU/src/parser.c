@@ -64,11 +64,12 @@ void parse_sensor_info(parser_t *parser,
 void parse_log_data(parser_t *parser, char *data)
 {
   state_t *state = parser->state;
-  
-  char* end;
+
+  char *end;
 
   // parsing date and time MM/DD/YYYY + HH:MM:SS.SSS -> 6 numbers
-  for (int i = 0; i < 6; i++){
+  for (int i = 0; i < 6; i++)
+  {
     strtof(data, &end);
     data = end + 1;
   }
@@ -82,7 +83,6 @@ void parse_log_data(parser_t *parser, char *data)
     data = end + 1;
     state->aZ = strtof(data, &end);
     data = end + 1;
-    
   }
 
   if (parser->config->gyroscope_active)
@@ -93,7 +93,6 @@ void parse_log_data(parser_t *parser, char *data)
     data = end + 1;
     state->gZ = strtof(data, &end);
     data = end + 1;
-    
   }
 
   if (parser->config->magnetometer_active)
@@ -104,21 +103,22 @@ void parse_log_data(parser_t *parser, char *data)
     data = end + 1;
     state->mZ = strtof(data, &end);
     data = end + 1;
-    
   }
 
-  if (parser->config->temperature_active){
+  if (parser->config->temperature_active)
+  {
     state->imu_degC = strtof(data, &end);
     data = end + 1;
   }
-  
+
   // GPS part
   // parsing date and time MM/DD/YYYY + HH:MM:SS.SSS -> 6 numbers
-  for (int i = 0; i < 6; i++){
+  for (int i = 0; i < 6; i++)
+  {
     strtof(data, &end);
     data = end + 1;
   }
-  
+
   // parse_float(data, &i, &state->gps_Lat);
   state->gps_Lat = strtof(data, &end);
   data = end + 1;
@@ -148,7 +148,7 @@ void parse_log_data(parser_t *parser, char *data)
   // parse_float(data, &i, &state->gps_pDOP);
   state->gps_pDOP = strtof(data, &end);
   data = end + 1;
-  
+
   //
 }
 

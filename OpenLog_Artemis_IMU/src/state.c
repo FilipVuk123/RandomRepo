@@ -4,7 +4,8 @@
 #include "state.h"
 #include "parser.h"
 
-state_t *create_state(void) {
+state_t *create_state(void)
+{
   state_t *state = malloc(sizeof(state_t));
 
   state->line_len = 0;
@@ -27,6 +28,7 @@ state_t *create_state(void) {
   return state;
 }
 
-void delete_state(state_t *state) {
+void delete_state(state_t *state)
+{
   free(state);
 }

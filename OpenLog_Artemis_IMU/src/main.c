@@ -31,7 +31,7 @@ float computeHeading(const float mag_x, const float mag_y, const float mag_z, co
 	return atan2(vector_north.x, vector_north.y) * 180 / M_PI;
 }
 
-#define AVG_COUNT 30
+#define AVG_COUNT 5
 
 int main()
 {
@@ -42,9 +42,6 @@ int main()
 
 	parser_t *parser = create_parser();
 
-	double f_yaw = 0.0, f_pitch = 0.0, f_roll = 0.0;
-	int first = 1;
-
 	// FILE *csv_file = create_csv_file(); // when commented results in SEG FAULT
 
 	while (keepRunning)
@@ -53,7 +50,8 @@ int main()
 		/* Parse sensor logged data */
 		for (int i = 0; i < AVG_COUNT; i++)
 		{
-			if(!keepRunning) break;
+			if (!keepRunning)
+				break;
 			next_log_data(bus, parser);
 			avg_aX += parser->state->aX;
 			avg_aY += parser->state->aY;
@@ -75,16 +73,15 @@ int main()
 		avg_mY /= AVG_COUNT;
 		avg_mZ /= AVG_COUNT;
 
-		
 		printf("IMU : a: %f, %f, %f, g: %f, %f, %f, m: %f, %f, %f \n",
 			   avg_aX, avg_aY, avg_aZ,
 			   avg_gX, avg_gY, avg_gZ,
 			   avg_mX, avg_mY, avg_mZ);
 
 		// printf("GPS : Alt %f m, Lat %f°, Long %f°, Speed %fm/s, %f°, SIV %d, FixPoint %d\n",
-			//    parser->state->gps_Alt, parser->state->gps_Lat, parser->state->gps_Long,
-			//    parser->state->gps_GroundSpeed, parser->state->gps_Heading,
-			//    parser->state->gps_SIV, parser->state->gps_FixType);
+		//    parser->state->gps_Alt, parser->state->gps_Lat, parser->state->gps_Long,
+		//    parser->state->gps_GroundSpeed, parser->state->gps_Heading,
+		//    parser->state->gps_SIV, parser->state->gps_FixType);
 
 		printf("\n");
 		/* Save it to csv file */
@@ -92,19 +89,6 @@ int main()
 
 		/*-------------------------------------*/
 		// Where is north?
-
-		// computing just from Magnetometer
-		// double heading = atan2(avg_mY, avg_mX) * 180 / M_PI;
-		// printf("%f -> ", heading);
-		// if(heading>= -45 && heading<= 45){
-		// 	printf("N\n");
-		// }else if(heading>= 45 && heading<= 135){
-		// 	printf("W\n");
-		// }else if(heading<= -45 && heading>= -135){
-		// 	printf("E\n");
-		// }else{
-		// 	printf("S\n");
-		// }
 
 		// computing from both Magnetometer and Accelerometer
 		double newHeading = computeHeading(avg_mX, avg_mY, avg_mZ, avg_aX, avg_aY, avg_aZ);
@@ -131,25 +115,14 @@ int main()
 
 		double yaw, pitch, roll;
 
-		roll = atan (avg_aX/sqrt(avg_aY*avg_aY + avg_aZ*avg_aZ));
-		pitch = atan (avg_aY/sqrt(avg_aX*avg_aX + avg_aZ*avg_aZ));
+		roll = atan(avg_aX / sqrt(avg_aY * avg_aY + avg_aZ * avg_aZ));
+		pitch = atan(avg_aY / sqrt(avg_aX * avg_aX + avg_aZ * avg_aZ));
 
-   		yaw = atan2((avg_mY * cos(roll)) - (avg_mZ * sin(roll)), (avg_mX * cos(pitch))+(avg_mY* sin(roll)*sin(pitch)) + (avg_mZ * cos(roll) * sin(pitch)));
-		pitch = 180* pitch / M_PI;
-		roll = 180* roll / M_PI;
-		yaw = 180*yaw / M_PI;
-
-		if(first){
-			first = 0;
-			f_yaw = yaw;
-			f_roll = roll;
-			f_pitch = pitch;		
-		}else{
-			yaw -= f_yaw;
-			roll -= f_roll;
-			pitch -= f_pitch;
-		}
-
+		yaw = atan2((avg_mY * cos(roll)) - (avg_mZ * sin(roll)),
+					(avg_mX * cos(pitch)) + (avg_mY * sin(roll) * sin(pitch)) + (avg_mZ * cos(roll) * sin(pitch)));
+		pitch = 180 * pitch / M_PI;
+		roll = 180 * roll / M_PI;
+		yaw = 180 * yaw / M_PI;
 
 		printf("Roll: %f, Pitch: %f, Yaw: %f\n", roll, pitch, yaw);
 	}
