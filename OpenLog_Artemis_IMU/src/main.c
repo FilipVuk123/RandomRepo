@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <math.h>
 #include "imu.h"
+#include "sensor_fusion.h"
 
 static volatile int keepRunning = 1;
 
@@ -22,7 +23,7 @@ void intHandler(int dummy)
 	keepRunning = 0;
 }
 
-#define AVG_COUNT 15
+#define AVG_COUNT 30
 
 int main()
 {
@@ -36,6 +37,7 @@ int main()
 	// FILE *csv_file = create_csv_file(); // when commented results in SEG FAULT
 
 	next_log_data(bus, parser);
+#if 0
 	if (!parser->config->accelerometer_active)
 	{
 		enable_accelometer(parser->config, bus);
@@ -52,11 +54,13 @@ int main()
 	{
 		enable_temperature(parser->config, bus);
 	}
+#endif
+	quaternion_t q = createQuat();
 
 	while (keepRunning)
 	{
+#if 0
 		float avg_aX = 0.0, avg_aY = 0.0, avg_aZ = 0.0, avg_gX = 0.0, avg_gY = 0.0, avg_gZ = 0.0, avg_mX = 0.0, avg_mY = 0.0, avg_mZ = 0.0;
-		/* Parse sensor logged data */
 		for (int i = 0; i < AVG_COUNT; i++)
 		{
 			if (!keepRunning)
@@ -87,16 +91,32 @@ int main()
 			   avg_gX, avg_gY, avg_gZ,
 			   avg_mX, avg_mY, avg_mZ);
 
-		printf("GPS : Alt %f m, Lat %f°, Long %f°, Speed %fm/s, %f°, SIV %d, FixPoint %d\n",
-			   parser->state->gps_Alt, parser->state->gps_Lat, parser->state->gps_Long,
-			   parser->state->gps_GroundSpeed, parser->state->gps_Heading,
-			   parser->state->gps_SIV, parser->state->gps_FixType);
+#endif
+
+		next_log_data(bus, parser);
+		printf("In main. Before change ");
+		printQuat(q);
+		MadgwickQuaternionUpdate(&q, 0.1, // changed to 10Hz
+								 parser->state->aX / 1000, parser->state->aY / 1000, parser->state->aZ / 1000,
+								 toRadians(parser->state->gX), toRadians(parser->state->gY), toRadians(parser->state->gZ),
+								 parser->state->mX, parser->state->mY, parser->state->mZ);
+		printf("In main. After change ");
+		printQuat(q);
+		euler_angles_t euler = quatToEuler(q);
+		printf("Euler: ");
+		printEuler(euler);
+
+#if 0
+		// printf("GPS : Alt %f m, Lat %f°, Long %f°, Speed %fm/s, %f°, SIV %d, FixPoint %d\n",
+		// 	   parser->state->gps_Alt, parser->state->gps_Lat, parser->state->gps_Long,
+		// 	   parser->state->gps_GroundSpeed, parser->state->gps_Heading,
+		// 	   parser->state->gps_SIV, parser->state->gps_FixType);
 
 		printf("\n");
 		/* Save it to csv file */
 		// log_line_to_csv(csv_file, parser);
 
-#if 0
+
 		/*-------------------------------------*/
 		// Where is north?
 
