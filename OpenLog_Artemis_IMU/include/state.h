@@ -31,7 +31,7 @@ typedef struct
   /* Temperature */
   float imu_degC;
 
-  float qx, qy, qz;
+  float quat_x, quat_y, quat_z;
 
   /*
    * GPS logging values, for more details see:

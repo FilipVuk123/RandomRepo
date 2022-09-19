@@ -118,37 +118,28 @@ void parse_log_data(parser_t *parser, char *data)
     data = end + 1;
   }
 
-  // parse_float(data, &i, &state->gps_Lat);
   state->gps_Lat = strtof(data, &end);
   data = end + 1;
   state->gps_Lat /= powf(10, 7);
-  // parse_float(data, &i, &state->gps_Long);
   state->gps_Long = strtof(data, &end);
   data = end + 1;
   state->gps_Long /= powf(10, 7);
-  // parse_float(data, &i, &state->gps_Alt);
   state->gps_Alt = strtof(data, &end);
-  state->gps_Alt /= 1000;
   data = end + 1;
-  // parse_int(data, &i, &state->gps_SIV);
+  state->gps_Alt /= 1000;
   state->gps_SIV = strtol(data, &end, 10);
   data = end + 1;
-  // parse_int(data, &i, &state->gps_FixType);
   state->gps_FixType = strtol(data, &end, 10);
   data = end + 1;
-  // parse_float(data, &i, &state->gps_GroundSpeed);
   state->gps_GroundSpeed = strtof(data, &end);
+  data = end + 1;
   state->gps_GroundSpeed /= 1000;
-  data = end + 1;
-  // parse_float(data, &i, &state->gps_Heading);
   state->gps_Heading = strtof(data, &end);
-  state->gps_Heading /= powf(10, 5);
   data = end + 1;
-  // parse_float(data, &i, &state->gps_pDOP);
+  state->gps_Heading /= powf(10, 5);
+  
   state->gps_pDOP = strtof(data, &end);
   data = end + 1;
-
-  //
 }
 
 void next_log_data(serial_bus_t *bus, parser_t *parser)
