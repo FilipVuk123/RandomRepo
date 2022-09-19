@@ -12,7 +12,13 @@ typedef struct
 } euler_angles_t;
 
 
-void MadgwickQuaternionUpdate(quaternion_t *q, const float delta_t, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
+void set_zero_point(quaternion_t *q_zero, quaternion_t* q);
+
+quaternion_t conjugate_quaternion(const quaternion_t quat);
+
+quaternion_t hamilton_quaternions(const quaternion_t a, const quaternion_t b);
+
+void MadgwickQuaternionUpdate(quaternion_t *q, quaternion_t *q_zero, const float delta_t, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
 
 euler_angles_t quatToEuler(const quaternion_t q);
 

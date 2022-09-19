@@ -56,6 +56,7 @@ int main()
 	}
 #endif
 	quaternion_t q = createQuat();
+	quaternion_t q_zero = createQuat();
 
 	while (keepRunning)
 	{
@@ -96,7 +97,7 @@ int main()
 		next_log_data(bus, parser);
 		printf("In main. Before change ");
 		printQuat(q);
-		MadgwickQuaternionUpdate(&q, 0.1, // changed to 10Hz
+		MadgwickQuaternionUpdate(&q, &q_zero, 0.1, // changed to 10Hz
 								 parser->state->aX / 1000, parser->state->aY / 1000, parser->state->aZ / 1000,
 								 toRadians(parser->state->gX), toRadians(parser->state->gY), toRadians(parser->state->gZ),
 								 parser->state->mX, parser->state->mY, parser->state->mZ);

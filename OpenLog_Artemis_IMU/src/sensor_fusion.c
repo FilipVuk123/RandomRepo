@@ -44,8 +44,32 @@ void printEuler(const euler_angles_t euler){
 	printf("%f, %f, %f\n", euler.yaw, euler.pitch, euler.roll);
 }
 
+void set_zero_point(quaternion_t *q_zero, quaternion_t* q){
+	q_zero->w = q->w;
+	q_zero->y = -q->y;
+	q_zero->z = -q->z;
+	q_zero->x = -q->x;
+}
 
-void MadgwickQuaternionUpdate(quaternion_t *q, const float delta_t, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz)
+quaternion_t conjugate_quaternion(const quaternion_t quat){
+	quaternion_t to_return;
+	to_return.w = quat.w;
+	to_return.x = -quat.x;
+	to_return.y = -quat.y;
+	to_return.z = -quat.z;
+	return to_return;
+}
+
+quaternion_t hamilton_quaternions(const quaternion_t a, const quaternion_t b){
+	quaternion_t to_return;
+	to_return.w=a.w*b.w	-a.x*b.x	-a.y*b.y	-a.z*b.z;
+	to_return.x=a.w*b.x	+a.x*b.w	+a.y*b.z	-a.z*b.y;
+	to_return.y=a.w*b.y	-a.x*b.z	+a.y*b.w	+a.z*b.x;
+	to_return.z=a.w*b.z	+a.x*b.y	-a.y*b.x	+a.z*b.w;
+	return to_return;
+}
+
+void MadgwickQuaternionUpdate(quaternion_t *q, quaternion_t *q_zero, const float delta_t, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz)
 {
 	float q1 = q->w, q2 = q->x, q3 = q->y, q4 = q->z;   						// short name local variable for readability
 	float norm;
@@ -141,6 +165,6 @@ void MadgwickQuaternionUpdate(quaternion_t *q, const float delta_t, float ax, fl
 	printf("After change ");
 	printQuat(*q);
 
-	// Fusion_rotate_quaterion();
+	*q = hamilton_quaternions(*q_zero, *q);
 }
 
