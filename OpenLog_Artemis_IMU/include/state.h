@@ -31,6 +31,8 @@ typedef struct
   /* Temperature */
   float imu_degC;
 
+  float qx, qy, qz;
+
   /*
    * GPS logging values, for more details see:
    * https://github.com/sparkfun/OpenLog_Artemis/blob/main/SENSOR_UNITS.md#u-blox-GNSS-boards

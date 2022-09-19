@@ -73,6 +73,13 @@ void parse_log_data(parser_t *parser, char *data)
     data = end + 1;
   }
 
+  state->qx = strtof(data, &end);
+  data = end + 1;
+  state->qy = strtof(data, &end);
+  data = end + 1;
+  state->qz = strtof(data, &end);
+  data = end + 1;
+
   // IMU part
   if (parser->config->accelerometer_active)
   {

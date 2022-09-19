@@ -95,6 +95,7 @@ int main()
 #endif
 
 		next_log_data(bus, parser);
+		printf("Q1, Q2, Q3: %f, %f, %f, %f\n", parser->state->qx, parser->state->qy, parser->state->qz);
 		printf("In main. Before change ");
 		printQuat(q);
 		MadgwickQuaternionUpdate(&q, &q_zero, 0.1, // changed to 10Hz
@@ -106,6 +107,33 @@ int main()
 		euler_angles_t euler = quatToEuler(q);
 		printf("Euler: ");
 		printEuler(euler);
+		// double q1 = parser->state->qx;
+		// double q2 = parser->state->qy;
+		// double q3 = parser->state->qz;
+
+		// double q0 = sqrt(1.0 - ((q1 * q1) + (q2 * q2) + (q3 * q3)));
+
+		// printf("Quat: %f, %f, %f, %f\n", q1, q2, q3, q0);
+
+		// double q2sqr = q2 * q2;
+
+		// // roll (x-axis rotation)
+		// double t0 = +2.0 * (q0 * q1 + q2 * q3);
+		// double t1 = +1.0 - 2.0 * (q1 * q1 + q2sqr);
+		// double roll = atan2(t0, t1) * 180.0 / M_PI;
+
+		// // pitch (y-axis rotation)
+		// double t2 = +2.0 * (q0 * q2 - q3 * q1);
+		// t2 = t2 > 1.0 ? 1.0 : t2;
+		// t2 = t2 < -1.0 ? -1.0 : t2;
+		// double pitch = asin(t2) * 180.0 / M_PI;
+
+		// // yaw (z-axis rotation)
+		// double t3 = +2.0 * (q0 * q3 + q1 * q2);
+		// double t4 = +1.0 - 2.0 * (q2sqr + q3 * q3);
+		// double yaw = atan2(t3, t4) * 180.0 / M_PI;
+
+		// printf("Eular: %f, %f, %f\n", yaw, pitch, roll);
 
 #if 0
 		// printf("GPS : Alt %f m, Lat %f°, Long %f°, Speed %fm/s, %f°, SIV %d, FixPoint %d\n",
