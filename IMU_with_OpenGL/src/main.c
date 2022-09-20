@@ -314,7 +314,7 @@ int main()
 		// yaw (z-axis rotation)
 		double t3 = +2.0 * (qw * qz + qx * qy);
 		double t4 = +1.0 - 2.0 * (q2sqr + qz * qz);
-		double yaw = atan2(t3, t4) * 180.0 / M_PI;
+		double yaw = atan2(t3, t4) * 180.0 / M_PI - 180.0;
 
 		printf("Eular: %f, %f, %f\n", yaw, pitch, roll);
 

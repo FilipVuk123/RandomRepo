@@ -10,6 +10,10 @@ state_t *create_state(void)
 
   state->line_len = 0;
 
+  state->q1 = 0.0;
+  state->q2 = 0.0;
+  state->q3 = 0.0;
+
   state->aX = state->aY = state->aZ = 0.0;
   state->gX = state->gY = state->gZ = 0.0;
   state->mX = state->mY = state->mZ = 0.0;
