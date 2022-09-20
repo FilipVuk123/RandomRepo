@@ -19,6 +19,8 @@ typedef struct
    * https://github.com/sparkfun/OpenLog_Artemis/blob/main/SENSOR_UNITS.md#ICM-20948-IMU
    */
 
+  float q1, q2, q3;
+
   /* Accelerometer */
   float aX, aY, aZ;
 
@@ -30,8 +32,6 @@ typedef struct
 
   /* Temperature */
   float imu_degC;
-
-  float quat_x, quat_y, quat_z;
 
   /*
    * GPS logging values, for more details see:

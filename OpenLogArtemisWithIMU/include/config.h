@@ -13,6 +13,8 @@ typedef struct
 	bool gyroscope_active;
 	bool magnetometer_active;
 	bool temperature_active;
+
+	bool quaternions_active;
 } imu_config_t;
 
 imu_config_t *create_config(void);

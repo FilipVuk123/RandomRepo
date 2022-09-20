@@ -4,7 +4,7 @@
 
 #define GyroMeasError		M_PI * (180.0f / 180.0f)							// gyroscope measurement error in rads/s (start at 40 deg/s)
 #define GyroMeasDrift		M_PI * (0.0f  / 180.0f);							// gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
-#define beta 				sqrt(3.0f / 4.0f) *GyroMeasError   					// compute beta
+#define beta 				1 // sqrt(3.0f / 4.0f) *GyroMeasError   					// compute beta
 
 quaternion_t createQuat(){
 	quaternion_t to_return;
@@ -156,15 +156,15 @@ void MadgwickQuaternionUpdate(quaternion_t *q, quaternion_t *q_zero, const float
 	norm = sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);    // normalise quaternion
 	norm = 1.0f/norm;
 	
+	printf("Before change ");
 	printQuat(*q);
 	q->w = q1 * norm;
 	q->x = q2 * norm;
 	q->y = q3 * norm;
 	q->z = q4 * norm;
-	printf("Before change ");
-	printQuat(*q);
-	*q = hamilton_quaternions(*q_zero, *q);
 	printf("After change ");
 	printQuat(*q);
+
+	*q = hamilton_quaternions(*q_zero, *q);
 }
 

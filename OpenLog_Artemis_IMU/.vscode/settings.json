@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "math.h": "c",
-        "imu.h": "c",
-        "sensor_fusion.h": "c"
-    }
-}
