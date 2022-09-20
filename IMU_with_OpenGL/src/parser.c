@@ -72,13 +72,15 @@ void parse_log_data(parser_t *parser, char *data)
     strtof(data, &end);
     data = end + 1;
   }
-
-  state->q1 = strtof(data, &end);
-  data = end + 1;
-  state->q2 = strtof(data, &end);
-  data = end + 1;
-  state->q3 = strtof(data, &end);
-  data = end + 1;
+  if (parser->config->quaternions_active)
+  {
+    state->q1 = strtof(data, &end);
+    data = end + 1;
+    state->q2 = strtof(data, &end);
+    data = end + 1;
+    state->q3 = strtof(data, &end);
+    data = end + 1;
+  }
 
   // IMU part
   if (parser->config->accelerometer_active)
@@ -89,7 +91,9 @@ void parse_log_data(parser_t *parser, char *data)
     data = end + 1;
     state->aZ = strtof(data, &end);
     data = end + 1;
-  }else{
+  }
+  else
+  {
     state->aX = strtof(data, &end);
     data = end + 1;
     state->aY = strtof(data, &end);

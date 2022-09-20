@@ -19,6 +19,8 @@ imu_config_t *create_config(void)
 	config->magnetometer_active = false;
 	config->temperature_active = false;
 
+	config->quaternions_active = false;
+
 	return config;
 }
 
@@ -32,6 +34,10 @@ void activate_info(char const *const info, imu_config_t *config)
 		config->magnetometer_active = true;
 	else if (!strcmp(info, "imu_degC"))
 		config->temperature_active = true;
+	else if (!strcmp(info, "Q6_1"))
+		config->quaternions_active = true;
+	else if (!strcmp(info, "Q9_1"))
+		config->quaternions_active = true;
 }
 
 void flip_imu_logging(int option, serial_bus_t *bus)

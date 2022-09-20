@@ -265,7 +265,7 @@ int main()
         euler_angles_t euler = quatToEuler(q);
         printf("Euler: ");
         printEuler(euler);
-        
+
 #endif
         // input
         orqa_process_input(window);
@@ -284,13 +284,39 @@ int main()
         float tmp = 1.0f - parser->state->q1 * parser->state->q1 - parser->state->q2 * parser->state->q2 - parser->state->q3 * parser->state->q3;
         q0 = tmp > 0.0 ? sqrt(tmp) : 0.0;
 
-        // float ori[4] = {q3, q1, q0, q2}; // should be this
+        // float ori[4] = {q3, q1, q0, q2};
+        
+        float ori[4] = {q1, q3, q2, q0}; 
+        // float ori[4] = {q2, q0, q1, q3}; roll - wrong
+        // float ori[4] = {q0, q2, q3, q1};
 
-        float ori[4] = {q1, q3, q2, q0}; // works
+        printf("%f %f %f %f\n", q1, q2, q3, q0);
 
-        // float ori[4] = {q2, q0, q1, q3}; // could work
+        float qx, qy, qz, qw;
+        qx = q1;
+        qy = q2;
+        qz = q3;
+        qw = q0;
 
-        // float ori[4] = {q0, q2, q3, q1}; // works
+        double q2sqr = qy * qy;
+
+		// roll (x-axis rotation)
+		double t0 = +2.0 * (qw * qx + qy * qz);
+		double t1 = +1.0 - 2.0 * (qx * qx + q2sqr);
+		double roll = atan2(t0, t1) * 180.0 / M_PI;
+
+		// pitch (y-axis rotation)
+		double t2 = +2.0 * (qw * qy - qz * qx);
+		t2 = t2 > 1.0 ? 1.0 : t2;
+		t2 = t2 < -1.0 ? -1.0 : t2;
+		double pitch = asin(t2) * 180.0 / M_PI;
+
+		// yaw (z-axis rotation)
+		double t3 = +2.0 * (qw * qz + qx * qy);
+		double t4 = +1.0 - 2.0 * (q2sqr + qz * qz);
+		double yaw = atan2(t3, t4) * 180.0 / M_PI;
+
+		printf("Eular: %f, %f, %f\n", yaw, pitch, roll);
 
         glm_quat_look(cam.cameraPos, ori, view);
         // printf("%f, %f, %f, %f\n", cam.resultQuat[0], cam.resultQuat[1], cam.resultQuat[2], cam.resultQuat[3]);
