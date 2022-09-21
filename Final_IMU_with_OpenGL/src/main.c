@@ -32,7 +32,7 @@ const GLuint SCR_HEIGHT = 1080;
 typedef struct
 {
     euler_angles_t resultEuler;
-    quaternion_t resultQuat;
+    quaternion_t __resultQuat;
 } opengl_cam_t;
 
 void *readDMSfromOpenLogAtremis(void *c_ptr)
@@ -91,12 +91,14 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
     int ccc = 0;
 
     quaternion_t q_zero = createQuat();
+    quaternion_t quat = createQuat();
+    
     printf("Before while!\n");
 
     while (keepRunning)
     {
         if(ccc++ == 300){
-            set_zero_point(&q_zero, &cam->resultQuat);
+            set_zero_point(&q_zero, &quat);
         }
         char q1Buf[12] = "\0";
         char q2Buf[12] = "\0";
@@ -127,10 +129,10 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
         q2 = atof(q2Buf);
         q3 = atof(q3Buf);
         
-        quaternion_t quat = getQuat(q1,q2,q3);
-        cam->resultQuat = hamilton_quaternions(q_zero, quat);
-        // printQuat(cam->resultQuat);
-        cam->resultEuler = quatToEuler(cam->resultQuat);
+        quat = getQuat(q1,q2,q3);
+        cam->__resultQuat = hamilton_quaternions(q_zero, quat);
+        // printQuat(cam->__resultQuat);
+        cam->resultEuler = quatToEuler(cam->__resultQuat);
         printEuler(cam->resultEuler);
     }
 exitSerial:
