@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "unistd.h": "c",
+        "orqa_opengl.h": "c"
+    }
+}
