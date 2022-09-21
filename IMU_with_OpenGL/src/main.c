@@ -290,17 +290,17 @@ int main()
         // generate projection matrix
         glm_perspective(cam.fov, (GLfloat)SCR_WIDTH / (GLfloat)SCR_HEIGHT, 0.01f, 100.0f, proj); // zoom
 
-        
         quaternion_t q = getQuat(parser->state->q1, parser->state->q2, parser->state->q3);
         q = hamilton_quaternions(q_zero, q);
         printf("ccc: %d", ccc);
-        if (ccc++ == 600){
+        if (ccc++ == 600)
+        {
             printf("\n\nZERO POINT SET!!!\n\n");
             set_zero_point(&q_zero, &q);
         }
 
         printQuat(q);
-        
+
         euler_angles_t euler = quatToEuler(q);
         printEuler(euler);
 
@@ -311,7 +311,6 @@ int main()
         glm_quat_mul(YawQuat, PitchQuat, tmpQuat);
         glm_quat_mul(tmpQuat, RollQuat, cam.resultQuat);
 
-        
         glm_quat_look(cam.cameraPos, cam.resultQuat, view);
         // printf("%f, %f, %f, %f\n", cam.resultQuat[0], cam.resultQuat[1], cam.resultQuat[2], cam.resultQuat[3]);
 
@@ -334,7 +333,6 @@ int main()
         orqa_bind_vertex_object_and_draw_it(VAOs[2], GL_TRIANGLES, DSS1.numTriangles);
         orqa_bind_vertex_object_and_draw_it(VAOs[3], GL_TRIANGLES, DSS2.numTriangles);
         orqa_bind_vertex_object_and_draw_it(VAOs[4], GL_TRIANGLES, DSS3.numTriangles);
-
 
         // printf("\r Render FPS: %f", 1000/orqa_get_time_diff_msec(clock, orqa_time_now()));
 
