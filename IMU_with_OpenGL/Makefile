@@ -2,7 +2,7 @@ CC=gcc
 
 CFLAGS   := -Iinclude -pipe -pedantic -g -Wall -Wextra -O3 -ffast-math
 LDFLAGS  := 
-LDLIBS   := -lm -ldl -lglfw -lavutil -lavformat -lavcodec
+LDLIBS   := -lm -ldl -lglfw -lavutil -lavformat -lavcodec -pthread
 
 SRC_DIR:=src
 BIN_DIR:=bin

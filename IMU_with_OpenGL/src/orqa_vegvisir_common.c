@@ -6,6 +6,19 @@
 
 volatile int toEXIT = 0;
 
+
+// The User-defined method
+static int str_length(char str[]) {
+    // initializing count variable (stores the length of the string)
+    int count; 
+    
+    // incrementing the count till the end of the string
+    for (count = 0; str[count] != '\0'; ++count);
+    
+    // returning the character count of the string
+    return count; 
+}
+
 /// This function keeps track all the input code.
 /// Moves between DSS, MRSS and 360 modules using 'D', 'M' or '3' keys
 void orqa_process_input(GLFWwindow *window)
@@ -135,7 +148,7 @@ void *orqa_read_from_serial(void *c_ptr)
     glm_quat_identity(pitchQuat);
 
     // Open the serial port. Change device path as needed (currently set to an standard FTDI USB-UART cable type device)
-    int serial_port = open("/dev/ttyUSB0", O_RDWR); // Create new termios struc, we call it 'tty' for convention
+    int serial_port = open("/dev/ttyUSB1", O_RDWR); // Create new termios struc, we call it 'tty' for convention
     struct termios tty;                             // Read in existing settings, and handle any error
     if (tcgetattr(serial_port, &tty) != 0)
     {
@@ -190,8 +203,8 @@ void *orqa_read_from_serial(void *c_ptr)
         orqa_clock_t clock1 = orqa_time_now();
         orqa_sleep(ORQA_SLEEP_MSEC, 5);
         read(serial_port, &headTrackingBuffer, sizeof(headTrackingBuffer));
-        printf("Buffer: %s\n", headTrackingBuffer);
-        printf("Time: %f\n", orqa_get_time_diff_msec(clock1, orqa_time_now()));
+        // printf("Buffer: %s\n", headTrackingBuffer);
+        // printf("Time: %f\n", orqa_get_time_diff_msec(clock1, orqa_time_now()));
 
         int b = 0, count = 0;
 
@@ -217,12 +230,16 @@ void *orqa_read_from_serial(void *c_ptr)
             if (toEXIT)
                 return NULL;
         }
+        if( str_length(pitchBuf) == 0 || str_length(yawBuf) == 0 || str_length(rollBuf) == 0){
+            continue;
+        }
         float yaw, pitch, roll;
         yaw = atof(yawBuf);
         pitch = -atof(pitchBuf);
         roll = -atof(rollBuf);
-        if (yaw == 0.0 && pitch == 0.0 && roll == 0.0)
-            continue;
+        c->yaw = yaw;
+        c->pitch = pitch;
+        c->roll = roll;
 
         glm_quatv(pitchQuat, orqa_radians(pitch), (vec3){1.0f, 0.0f, 0.0f});
         glm_quatv(yawQuat, orqa_radians(yaw), (vec3){0.0f, 1.0f, 0.0f});

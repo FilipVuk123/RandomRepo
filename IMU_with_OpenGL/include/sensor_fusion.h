@@ -30,4 +30,8 @@ quaternion_t createQuat();
 
 euler_angles_t createEular();
 
+euler_angles_t quatToEuler(const quaternion_t q);
+
+quaternion_t getQuat(const float q1, const float q2, const float q3);
+
 #endif

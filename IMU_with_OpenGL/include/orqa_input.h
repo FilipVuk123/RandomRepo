@@ -10,6 +10,7 @@
 typedef struct orqa_camera_t{
     vec3 cameraPos;
     GLfloat fov;
+    float yaw, pitch, roll;
     versor resultQuat;
 }orqa_camera_t;
 

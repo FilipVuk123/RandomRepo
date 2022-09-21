@@ -13,9 +13,9 @@
 #include <signal.h>
 #include <unistd.h>
 #include <math.h>
-#include "imu.h"
 #include "sensor_fusion.h"
 #include "orqa_vegvisir_common.h"
+#include <pthread.h>
 
 static volatile int keepRunning = 1;
 
@@ -175,6 +175,9 @@ int main()
     GLuint viewLoc = orqa_get_uniform_location(shaderProgram, "view");
     GLuint projLoc = orqa_get_uniform_location(shaderProgram, "proj");
 
+    pthread_t goggles_ht;
+    pthread_create(&goggles_ht, NULL, orqa_read_from_serial, &cam);
+
     /***************************************************************************************************************************************/
 
     char const *device = "/dev/ttyUSB0";
@@ -203,9 +206,15 @@ int main()
 	{
 		enable_temperature(parser->config, bus);
 	}
-#endif
     quaternion_t q = createQuat();
     quaternion_t q_zero = createQuat();
+#endif
+
+    orqa_clock_t clock = orqa_time_now();
+    FILE* fptr_goggles = fopen("goggles.txt", "w+");
+    FILE* fptr_artemis = fopen("artemis.txt", "w+");
+
+    versor PitchQuat, RollQuat, YawQuat, tmpQuat;
 
     while (keepRunning)
     {
@@ -277,48 +286,22 @@ int main()
         // generate projection matrix
         glm_perspective(cam.fov, (GLfloat)SCR_WIDTH / (GLfloat)SCR_HEIGHT, 0.01f, 100.0f, proj); // zoom
 
-        float q1, q2, q3, q0;
-        q1 = parser->state->q1;
-        q2 = parser->state->q2;
-        q3 = parser->state->q3;
-        float tmp = 1.0f - parser->state->q1 * parser->state->q1 - parser->state->q2 * parser->state->q2 - parser->state->q3 * parser->state->q3;
-        q0 = tmp > 0.0 ? sqrt(tmp) : 0.0;
-
-        // float ori[4] = {q3, q1, q0, q2};
         
-        float ori[4] = {q1, q3, q2, q0}; 
-        // float ori[4] = {q2, q0, q1, q3}; roll - wrong
-        // float ori[4] = {q0, q2, q3, q1};
+        quaternion_t q = getQuat(parser->state->q1, parser->state->q2, parser->state->q3);
+        printQuat(q);
+        
+        euler_angles_t euler = quatToEuler(q);
+        printEuler(euler);
 
-        printf("%f %f %f %f\n", q1, q2, q3, q0);
+        glm_quatv(PitchQuat, orqa_radians(euler.pitch), (vec3){1.0f, 0.0f, 0.0f});
+        glm_quatv(YawQuat, orqa_radians(-euler.yaw + 180), (vec3){0.0f, 1.0f, 0.0f});
+        glm_quatv(RollQuat, orqa_radians(euler.roll), (vec3){0.0f, 0.0f, 1.0f});
 
-        float qx, qy, qz, qw;
-        qx = q1;
-        qy = q2;
-        qz = q3;
-        qw = q0;
+        glm_quat_mul(YawQuat, PitchQuat, tmpQuat);
+        glm_quat_mul(tmpQuat, RollQuat, cam.resultQuat);
 
-        double q2sqr = qy * qy;
-
-		// roll (x-axis rotation)
-		double t0 = +2.0 * (qw * qx + qy * qz);
-		double t1 = +1.0 - 2.0 * (qx * qx + q2sqr);
-		double roll = atan2(t0, t1) * 180.0 / M_PI;
-
-		// pitch (y-axis rotation)
-		double t2 = +2.0 * (qw * qy - qz * qx);
-		t2 = t2 > 1.0 ? 1.0 : t2;
-		t2 = t2 < -1.0 ? -1.0 : t2;
-		double pitch = asin(t2) * 180.0 / M_PI;
-
-		// yaw (z-axis rotation)
-		double t3 = +2.0 * (qw * qz + qx * qy);
-		double t4 = +1.0 - 2.0 * (q2sqr + qz * qz);
-		double yaw = atan2(t3, t4) * 180.0 / M_PI + 180.0;
-
-		printf("Eular: %f, %f, %f\n", yaw, pitch, roll);
-
-        glm_quat_look(cam.cameraPos, ori, view);
+        
+        glm_quat_look(cam.cameraPos, cam.resultQuat, view);
         // printf("%f, %f, %f, %f\n", cam.resultQuat[0], cam.resultQuat[1], cam.resultQuat[2], cam.resultQuat[3]);
 
         // send MVP matrices to vertex shader
@@ -340,6 +323,7 @@ int main()
         orqa_bind_vertex_object_and_draw_it(VAOs[2], GL_TRIANGLES, DSS1.numTriangles);
         orqa_bind_vertex_object_and_draw_it(VAOs[3], GL_TRIANGLES, DSS2.numTriangles);
         orqa_bind_vertex_object_and_draw_it(VAOs[4], GL_TRIANGLES, DSS3.numTriangles);
+
 
         // printf("\r Render FPS: %f", 1000/orqa_get_time_diff_msec(clock, orqa_time_now()));
 
@@ -432,6 +416,9 @@ int main()
     orqa_delete_buffers(10, EBOs);
     orqa_delete_textures(5, textures);
     orqa_delete_program(shaderProgram);
+
+    fclose(fptr_artemis);
+    fclose(fptr_goggles);
 
     glfwTerminate();
     delete_bus(bus);
