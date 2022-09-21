@@ -148,7 +148,7 @@ void *orqa_read_from_serial(void *c_ptr)
     glm_quat_identity(pitchQuat);
 
     // Open the serial port. Change device path as needed (currently set to an standard FTDI USB-UART cable type device)
-    int serial_port = open("/dev/ttyUSB1", O_RDWR); // Create new termios struc, we call it 'tty' for convention
+    int serial_port = open(c->serial_port_name, O_RDWR); // Create new termios struc, we call it 'tty' for convention
     struct termios tty;                             // Read in existing settings, and handle any error
     if (tcgetattr(serial_port, &tty) != 0)
     {
@@ -225,7 +225,7 @@ void *orqa_read_from_serial(void *c_ptr)
                 yawBuf[b++] = ch;
             else if (count == 1)
                 pitchBuf[b++] = ch;
-            else
+            else if(count == 2)
                 rollBuf[b++] = ch;
             if (toEXIT)
                 return NULL;

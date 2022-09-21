@@ -12,6 +12,7 @@ typedef struct orqa_camera_t{
     GLfloat fov;
     float yaw, pitch, roll;
     versor resultQuat;
+    char* serial_port_name;
 }orqa_camera_t;
 
 /// This function moves camera (orqa_camera_t) while moving mouse

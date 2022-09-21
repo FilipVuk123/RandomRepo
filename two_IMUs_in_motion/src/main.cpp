@@ -41,6 +41,7 @@ typedef struct
 {
     euler_angles_t resultEuler;
     quaternion_t __resultQuat;
+    char* serial_port_name;
 } opengl_cam_t;
 
 void *readDMSfromOpenLogAtremis(void *c_ptr)
@@ -48,7 +49,7 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
     opengl_cam_t *cam = (opengl_cam_t *)c_ptr;
 
     // Open the serial port. Change device path as needed (currently set to an standard FTDI USB-UART cable type device)
-    int serial_port = open("/dev/ttyUSB0", O_RDWR); // Create new termios struc, we call it 'tty' for convention
+    int serial_port = open(cam->serial_port_name, O_RDWR); // Create new termios struc, we call it 'tty' for convention
     struct termios tty;                             // Read in existing settings, and handle any error
     if (tcgetattr(serial_port, &tty) != 0)
     {
@@ -101,14 +102,11 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
     int ccc = 0;
 
     quaternion_t q_zero = createQuat();
+    quaternion_t quat = createQuat();
     printf("Before while!\n");
 
     while (keepRunning)
     {
-        if (ccc++ == 600)
-        {
-            set_zero_point(&q_zero, &cam->__resultQuat);
-        }
         char q1Buf[12] = "\0";
         char q2Buf[12] = "\0";
         char q3Buf[12] = "\0";
@@ -117,6 +115,7 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
         while (1)
         {
             read(serial_port, &ch, sizeof(ch));
+            
             if (ch == '\n')
                 break;
 
@@ -138,7 +137,15 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
         q2 = atof(q2Buf);
         q3 = atof(q3Buf);
 
-        cam->__resultQuat = hamilton_quaternions(q_zero, getQuat(q1, q2, q3));
+        quat = getQuat(q1, q2, q3);
+        cam->__resultQuat = hamilton_quaternions(q_zero, quat);
+
+        if (ccc++ % 300 == 1)
+        {
+            printf("ZERO POINT!!!\n");
+            set_zero_point(&q_zero, &quat);
+        }
+
         cam->resultEuler = quatToEuler(cam->__resultQuat);
         // printEuler(cam->resultEuler);
     }
@@ -278,8 +285,26 @@ int main()
     cam.resultQuat[1] = 0.0f;
     cam.resultQuat[2] = 0.0f;
     cam.resultQuat[3] = 1.0f;
+    cam.yaw = 0.0;
+    cam.pitch = 0.0;
+    cam.roll = 0.0;
     cam.fov = 5.4f;
+    cam.serial_port_name = "/dev/ttyUSB0";
     orqa_set_window_user_pointer(window, &cam); // sent camera object to callback functions
+
+    orqa_camera_t cam1;
+    cam1.cameraPos[0] = 0.0f;
+    cam1.cameraPos[1] = 0.0f;
+    cam1.cameraPos[2] = 0.0f;
+    cam1.resultQuat[0] = 0.0f;
+    cam1.resultQuat[1] = 0.0f;
+    cam1.resultQuat[2] = 0.0f;
+    cam1.resultQuat[3] = 1.0f;
+    cam1.fov = 5.4f;
+    cam1.yaw = 0.0;
+    cam1.pitch = 0.0;
+    cam1.roll = 0.0;
+    cam1.serial_port_name = "/dev/ttyUSB1";
 
     // MVP matrices init
     mat4 model, proj, view;
@@ -293,13 +318,16 @@ int main()
     GLuint projLoc = orqa_get_uniform_location(shaderProgram, "proj");
 
     opengl_cam_t opengl_cam;
+    opengl_cam.serial_port_name = "/dev/ttyUSB0";
 
-
-    pthread_t goggles_ht;
-    pthread_create(&goggles_ht, NULL, orqa_read_from_serial, &cam);
+    // pthread_t goggles_ht;
+    // pthread_create(&goggles_ht, NULL, orqa_read_from_serial, &cam);
 
     pthread_t imu_ht;
     pthread_create(&imu_ht, NULL, readDMSfromOpenLogAtremis, &opengl_cam);
+
+    // pthread_t imu_ht;
+    // pthread_create(&imu_ht, NULL, orqa_read_from_serial, &cam1);
 
     versor pitchQuat, rollQuat, yawQuat, tmpQuat;
 
@@ -331,10 +359,14 @@ int main()
 
         glm_quatv(pitchQuat, orqa_radians(- cam.pitch + opengl_cam.resultEuler.pitch), vec3_pitch);
         glm_quatv(yawQuat, orqa_radians(- cam.yaw + opengl_cam.resultEuler.yaw + 180.0), vec3_yaw);
-        glm_quatv(rollQuat, orqa_radians(- cam.roll + opengl_cam.resultEuler.roll), vec3_roll);
+        glm_quatv(rollQuat, orqa_radians(cam.roll - opengl_cam.resultEuler.roll), vec3_roll);
 
-        printf("%f, %f, %f\n", cam.yaw, cam.pitch, cam.roll);
-        printf("%f, %f, %f\n", opengl_cam.resultEuler.yaw, opengl_cam.resultEuler.pitch, opengl_cam.resultEuler.roll);
+        // glm_quatv(pitchQuat, orqa_radians(cam.pitch - cam1.pitch), vec3_pitch);
+        // glm_quatv(yawQuat, orqa_radians(cam.yaw - cam1.yaw + 180.0), vec3_yaw);
+        // glm_quatv(rollQuat, orqa_radians(cam.roll - cam1.roll), vec3_roll);
+
+        // printf("Goggles: %f, %f, %f\n", cam.yaw, cam.pitch, cam.roll);
+        printf("IMU: %f, %f, %f\n", opengl_cam.resultEuler.yaw, opengl_cam.resultEuler.pitch, opengl_cam.resultEuler.roll);
 
         glm_quat_mul(yawQuat, pitchQuat, tmpQuat);
         glm_quat_mul(tmpQuat, rollQuat, cam.resultQuat);
