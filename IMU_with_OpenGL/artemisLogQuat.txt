@@ -1,0 +1,15 @@
+SD init failed (second attempt). Is card present? Formatted?
+Please ensure the SD card is formatted correctly using https://www.sdcard.org/downloads/formatter/
+Config file read failed: SD offline
+Artemis OpenLog v2.4
+SD card offline
+Datalogging offline
+Serial logging offline
+IMU online
+Identifying Qwiic Muxes...
+Identifying Qwiic Devices...
+No Qwiic devices detected
+Content-Type: text/csv
+
+rtcDate,rtcTime,Q6_1,Q6_2,Q6_3,output_Hz,
+01/01/2000,02:03:30.80,0.00118,-0.00057,0.00012,100.0,

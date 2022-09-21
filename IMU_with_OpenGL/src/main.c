@@ -216,6 +216,10 @@ int main()
 
     versor PitchQuat, RollQuat, YawQuat, tmpQuat;
 
+    quaternion_t q_zero = createQuat();
+
+    int ccc = 0;
+
     while (keepRunning)
     {
 #if 0
@@ -288,6 +292,13 @@ int main()
 
         
         quaternion_t q = getQuat(parser->state->q1, parser->state->q2, parser->state->q3);
+        q = hamilton_quaternions(q_zero, q);
+        printf("ccc: %d", ccc);
+        if (ccc++ == 600){
+            printf("\n\nZERO POINT SET!!!\n\n");
+            set_zero_point(&q_zero, &q);
+        }
+
         printQuat(q);
         
         euler_angles_t euler = quatToEuler(q);
