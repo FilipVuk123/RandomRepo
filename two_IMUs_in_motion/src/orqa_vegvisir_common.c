@@ -235,7 +235,7 @@ void *orqa_read_from_serial(void *c_ptr)
         float yaw, pitch, roll;
         yaw = atof(yawBuf);
         pitch = -atof(pitchBuf);
-        roll = -atof(rollBuf);
+        roll = atof(rollBuf);
         if(fabs(yaw) < 1.00 && fabs(pitch) < 1.0 && fabs(roll) < 1.0){
             set_zero_point_bool = 1;
         }

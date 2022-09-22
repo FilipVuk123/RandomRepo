@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "unistd.h": "c",
-        "orqa_opengl.h": "c"
+        "orqa_opengl.h": "c",
+        "cstring": "c",
+        "orqa_vegvisir_common.h": "c"
     }
 }

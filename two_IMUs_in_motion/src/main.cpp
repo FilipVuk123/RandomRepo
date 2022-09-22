@@ -1,9 +1,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 
-
 extern "C"
 {
-    #include <pthread.h>
+#include <pthread.h>
 // C library headers
 #include <stdio.h>   // printf
 #include <stdlib.h>  // calloc
@@ -42,7 +41,7 @@ typedef struct
 {
     euler_angles_t resultEuler;
     quaternion_t __resultQuat;
-    char* serial_port_name;
+    char *serial_port_name;
 } opengl_cam_t;
 
 void *readDMSfromOpenLogAtremis(void *c_ptr)
@@ -51,7 +50,7 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
 
     // Open the serial port. Change device path as needed (currently set to an standard FTDI USB-UART cable type device)
     int serial_port = open(cam->serial_port_name, O_RDWR); // Create new termios struc, we call it 'tty' for convention
-    struct termios tty;                             // Read in existing settings, and handle any error
+    struct termios tty;                                    // Read in existing settings, and handle any error
     if (tcgetattr(serial_port, &tty) != 0)
     {
         printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
@@ -116,7 +115,7 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
         while (1)
         {
             read(serial_port, &ch, sizeof(ch));
-            
+
             if (ch == '\n')
                 break;
 
@@ -146,13 +145,16 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
             printf("\n\nZERO POINT!!!\n\n");
             set_zero_point(&q_zero, &quat);
         }
-        if(set_zero_point_bool == 1){
+        if (set_zero_point_bool == 1)
+        {
             set_zero_point_bool = 0;
             set_zero_point(&q_zero, &quat);
         }
 
-
-        cam->resultEuler = quatToEuler(cam->__resultQuat);
+        euler_angles_t euler = quatToEuler(cam->__resultQuat);
+        cam->resultEuler.yaw = euler.yaw;
+        cam->resultEuler.pitch = -euler.pitch;
+        cam->resultEuler.roll = -euler.roll;
         // printEuler(cam->resultEuler);
     }
     close(serial_port);
@@ -363,13 +365,9 @@ int main()
         // generate projection matrix
         glm_perspective(cam.fov, (GLfloat)SCR_WIDTH / (GLfloat)SCR_HEIGHT, 0.01f, 100.0f, proj); // zoom
 
-        glm_quatv(pitchQuat, orqa_radians(- cam.pitch + opengl_cam.resultEuler.pitch), vec3_pitch);
-        glm_quatv(yawQuat, orqa_radians(- cam.yaw + opengl_cam.resultEuler.yaw + 180.0), vec3_yaw);
-        glm_quatv(rollQuat, orqa_radians(cam.roll - opengl_cam.resultEuler.roll), vec3_roll);
-
-        // glm_quatv(pitchQuat, orqa_radians(cam.pitch - cam1.pitch), vec3_pitch);
-        // glm_quatv(yawQuat, orqa_radians(cam.yaw - cam1.yaw + 180.0), vec3_yaw);
-        // glm_quatv(rollQuat, orqa_radians(cam.roll - cam1.roll), vec3_roll);
+        glm_quatv(pitchQuat, orqa_radians(-cam.pitch + opengl_cam.resultEuler.pitch), vec3_pitch);
+        glm_quatv(yawQuat, orqa_radians(-cam.yaw + opengl_cam.resultEuler.yaw + 180.0), vec3_yaw);
+        glm_quatv(rollQuat, orqa_radians(-cam.roll + opengl_cam.resultEuler.roll), vec3_roll);
 
         printf("Goggles: %f, %f, %f\n", cam.yaw, cam.pitch, cam.roll);
         printf("IMU: %f, %f, %f\n", opengl_cam.resultEuler.yaw, opengl_cam.resultEuler.pitch, opengl_cam.resultEuler.roll);
