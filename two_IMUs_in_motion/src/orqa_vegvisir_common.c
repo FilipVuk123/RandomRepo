@@ -6,7 +6,6 @@
 
 volatile int toEXIT = 0;
 
-
 // The User-defined method
 static int str_length(char str[]) {
     // initializing count variable (stores the length of the string)
@@ -237,6 +236,9 @@ void *orqa_read_from_serial(void *c_ptr)
         yaw = atof(yawBuf);
         pitch = -atof(pitchBuf);
         roll = -atof(rollBuf);
+        if(fabs(yaw) < 1.00 && fabs(pitch) < 1.0 && fabs(roll) < 1.0){
+            set_zero_point_bool = 1;
+        }
         c->yaw = yaw;
         c->pitch = pitch;
         c->roll = roll;

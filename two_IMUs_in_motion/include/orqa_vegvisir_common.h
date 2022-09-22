@@ -17,6 +17,14 @@
 #include <termios.h> // Contains POSIX terminal control definitions
 #include <unistd.h>  // write(), read(), close()
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern int set_zero_point_bool;
+#ifdef __cplusplus
+}
+#endif
+
 float orqa_radians(const float deg);
 void *orqa_udp_thread(void *c_ptr);
 void orqa_process_input(GLFWwindow *window);
