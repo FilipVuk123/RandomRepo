@@ -2,27 +2,19 @@
 
 extern "C"
 {
+#include "sensor_fusion.h"
+#include "orqa_vegvisir_common.h"
+}
+
 #include <pthread.h>
 // C library headers
 #include <stdio.h>   // printf
 #include <stdlib.h>  // calloc
 #include <string.h>  // strcmp
 #include <stdbool.h> // bool
-#include "bus.h"
-#include "util.h"
-#include "config.h"
-#include "parser.h"
-#include "state.h"
-#include "sensor_fusion.h"
-#include "orqa_vegvisir_common.h"
 #include <signal.h>
 #include <unistd.h>
 #include <math.h>
-}
-
-#include <opencv2/highgui.hpp>
-#include <opencv2/objdetect.hpp>
-#include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
 static volatile int keepRunning = 1;
@@ -147,6 +139,7 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
         }
         if (set_zero_point_bool == 1)
         {
+            printf("Here!\n");
             set_zero_point_bool = 0;
             set_zero_point(&q_zero, &quat);
         }
@@ -155,7 +148,6 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
         cam->resultEuler.yaw = euler.yaw;
         cam->resultEuler.pitch = -euler.pitch;
         cam->resultEuler.roll = -euler.roll;
-        // printEuler(cam->resultEuler);
     }
     close(serial_port);
     printf("Serial port closed!\n\n");
@@ -327,6 +319,8 @@ int main()
 
     opengl_cam_t opengl_cam;
     opengl_cam.serial_port_name = "/dev/ttyUSB0";
+    opengl_cam.resultEuler = createEular();
+    opengl_cam.__resultQuat = createQuat();
 
     pthread_t goggles_ht;
     pthread_create(&goggles_ht, NULL, orqa_read_from_serial, &cam);
@@ -369,8 +363,8 @@ int main()
         glm_quatv(yawQuat, orqa_radians(-cam.yaw + opengl_cam.resultEuler.yaw + 180.0), vec3_yaw);
         glm_quatv(rollQuat, orqa_radians(-cam.roll + opengl_cam.resultEuler.roll), vec3_roll);
 
-        printf("Goggles: %f, %f, %f\n", cam.yaw, cam.pitch, cam.roll);
-        printf("IMU: %f, %f, %f\n", opengl_cam.resultEuler.yaw, opengl_cam.resultEuler.pitch, opengl_cam.resultEuler.roll);
+        // printf("Goggles: %f, %f, %f\n", cam.yaw, cam.pitch, cam.roll);
+        // printf("IMU: %f, %f, %f\n", opengl_cam.resultEuler.yaw, opengl_cam.resultEuler.pitch, opengl_cam.resultEuler.roll);
 
         glm_quat_mul(yawQuat, pitchQuat, tmpQuat);
         glm_quat_mul(tmpQuat, rollQuat, cam.resultQuat);
@@ -421,8 +415,6 @@ int main()
     orqa_delete_program(shaderProgram);
 
     glfwTerminate();
-
-    // fclose(csv_file);
 
     printf("Exit OK!\n");
 

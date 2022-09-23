@@ -1,4 +1,7 @@
 #include "orqa_vegvisir_common.h"
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
 #define BUFSIZE 1024
 #define HEADTRACKING_BUFFER_SIZE 64
@@ -191,19 +194,18 @@ void *orqa_read_from_serial(void *c_ptr)
     {
         read(serial_port, &ch, sizeof(ch));
     } while (ch != ';');
-    char yawBuf[12] = "\0";
-    char pitchBuf[12] = "\0";
-    char rollBuf[12] = "\0";
+    
     while (1)
     {
         if (toEXIT)
             goto exitSerial;
         char headTrackingBuffer[32] = "\0";
+        char yawBuf[10] = "\0";
+        char pitchBuf[10] = "\0";
+        char rollBuf[10] = "\0";
         orqa_clock_t clock1 = orqa_time_now();
         orqa_sleep(ORQA_SLEEP_MSEC, 5);
         read(serial_port, &headTrackingBuffer, sizeof(headTrackingBuffer));
-        // printf("Buffer: %s\n", headTrackingBuffer);
-        // printf("Time: %f\n", orqa_get_time_diff_msec(clock1, orqa_time_now()));
 
         int b = 0, count = 0;
 
@@ -213,6 +215,8 @@ void *orqa_read_from_serial(void *c_ptr)
 
             if (ch == ';')
                 break;
+            if (ch == '\n')
+                continue;
 
             if (ch == ',')
             {
@@ -229,16 +233,23 @@ void *orqa_read_from_serial(void *c_ptr)
             if (toEXIT)
                 return NULL;
         }
+        // printf("%d\n\n", strcmp(yawBuf, "ZeroPoint"));
+        // printf("%s, %s, %s\n", yawBuf, pitchBuf, rollBuf);
+        if (strcmp(yawBuf, "ZeroPoint") == 0){
+            set_zero_point_bool = 1;
+            printf("Zero point set!!\n");
+            continue;
+        }
+        
         if( str_length(pitchBuf) == 0 || str_length(yawBuf) == 0 || str_length(rollBuf) == 0){
             continue;
         }
+        
         float yaw, pitch, roll;
         yaw = atof(yawBuf);
         pitch = -atof(pitchBuf);
         roll = atof(rollBuf);
-        if(fabs(yaw) < 1.00 && fabs(pitch) < 1.0 && fabs(roll) < 1.0){
-            set_zero_point_bool = 1;
-        }
+        
         c->yaw = yaw;
         c->pitch = pitch;
         c->roll = roll;
