@@ -11,8 +11,8 @@
 #include "orqa_clock.h"
 #include "kalman.h"
 
-float KALMAN_PREDICT_MS =  16.0;
-float KALMAN_UPDATE_MS  = 100.0;
+float KALMAN_PREDICT_MS =  16.0f;
+float KALMAN_UPDATE_MS  = 100.0f;
 
 
 typedef struct
@@ -67,9 +67,9 @@ int main()
 
     sleep(5);
 
-    comp_filter_t comp_filt;
-    comp_filt.phiHat_rad = 0.0f;
-    comp_filt.thetaHat_rad = 0.0f;
+    // comp_filter_t comp_filt;
+    // comp_filt.phiHat_rad = 0.0f;
+    // comp_filt.thetaHat_rad = 0.0f;
 
     orqa_clock_t predict_clock = orqa_time_now();
     orqa_clock_t update_clock = orqa_time_now();
@@ -78,8 +78,6 @@ int main()
     float Q[2] = {0.000001, 0.000001}; 
     float R[3] = {0.000011, 0.000011, 0.000011};
     KalmanInit(&kalman, 0.000001f, Q, R);
-
-    printf("Kalman after init: %f, %f, %f, %f, %f, %f, %f, %f, %f\n", kalman.P[0], kalman.P[1], kalman.P[2], kalman.P[3], kalman.Q[0], kalman.Q[1], kalman.R[0], kalman.R[1], kalman.R[2]);
 
     while (keepRunning)
     {
@@ -93,10 +91,9 @@ int main()
         kalman_ax = -camera.imu_state.ay;
         kalman_ay = -camera.imu_state.ax;
         kalman_az = -camera.imu_state.az;
-        kalman_gx = camera.imu_state.gy;
-        kalman_gy = camera.imu_state.gx;
-        kalman_gz = camera.imu_state.gz;
-
+        kalman_gx = -camera.imu_state.gy;
+        kalman_gy = -camera.imu_state.gx;
+        kalman_gz = -camera.imu_state.gz;
 
 
         // ComplementaryFilterPitchRoll(&comp_filt, 
@@ -115,9 +112,7 @@ int main()
             KalmanUpdate(&kalman, kalman_ax, kalman_ay, kalman_az);
             printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
             update_clock = orqa_time_now();
-        }
-        
-        
+        }   
     }
 printf("EXIT OK!\n");
     return 0;
