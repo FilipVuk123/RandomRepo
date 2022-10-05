@@ -8,6 +8,12 @@
 #include <signal.h>
 #include <pthread.h>
 #include "complementary_filter.h"
+#include "orqa_clock.h"
+#include "kalman.h"
+
+float KALMAN_PREDICT_MS =  16.0;
+float KALMAN_UPDATE_MS  = 100.0;
+
 
 typedef struct
 {
@@ -59,18 +65,28 @@ int main()
     pthread_t artemis_thread;
     pthread_create(&artemis_thread, NULL, readDMSfromOpenLogAtremis, &camera);
 
-    sleep(10);
+    sleep(5);
 
     comp_filter_t comp_filt;
     comp_filt.phiHat_rad = 0.0f;
     comp_filt.thetaHat_rad = 0.0f;
 
+    orqa_clock_t predict_clock = orqa_time_now();
+    orqa_clock_t update_clock = orqa_time_now();
+
+    kalman_data_t kalman;
+    float Q[2] = {0.000001, 0.000001}; 
+    float R[3] = {0.000011, 0.000011, 0.000011};
+    KalmanInit(&kalman, 0.000001f, Q, R);
+
+    printf("Kalman after init: %f, %f, %f, %f, %f, %f, %f, %f, %f\n", kalman.P[0], kalman.P[1], kalman.P[2], kalman.P[3], kalman.Q[0], kalman.Q[1], kalman.R[0], kalman.R[1], kalman.R[2]);
+
     while (keepRunning)
     {
-        printf("A: %f, %f, %f, G: %f, %f, %f, M: %f, %f, %f\n", 
-            camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az, 
-            camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, 
-            camera.imu_state.mx, camera.imu_state.my, camera.imu_state.mz);
+        // printf("A: %f, %f, %f, G: %f, %f, %f, M: %f, %f, %f\n", 
+        //     camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az, 
+        //     camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, 
+        //     camera.imu_state.mx, camera.imu_state.my, camera.imu_state.mz);
 
         // re-map of the IMU axis for EKF  
         double kalman_ax, kalman_ay, kalman_az, kalman_gy, kalman_gx, kalman_gz;
@@ -81,13 +97,27 @@ int main()
         kalman_gy = camera.imu_state.gx;
         kalman_gz = camera.imu_state.gz;
 
+
+
         // ComplementaryFilterPitchRoll(&comp_filt, 
         //     camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az,
         //     camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, 0.01666f);
         // printf("Complementary filter: %f, %f\n", comp_filt.phiHat_rad * 180/3.14, comp_filt.thetaHat_rad * 180/3.14);
 
+        if (orqa_get_time_diff_msec(predict_clock, orqa_time_now()) >= KALMAN_PREDICT_MS)
+        {
+            KalmanPredict(&kalman, kalman_gx, kalman_gy, kalman_gz, KALMAN_PREDICT_MS / 1000.0f);
+            predict_clock = orqa_time_now();
+        }
+
+        if (orqa_get_time_diff_msec(update_clock, orqa_time_now()) >= KALMAN_UPDATE_MS)
+        {
+            KalmanUpdate(&kalman, kalman_ax, kalman_ay, kalman_az);
+            printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
+            update_clock = orqa_time_now();
+        }
         
-        usleep(15*1000);
+        
     }
 printf("EXIT OK!\n");
     return 0;
