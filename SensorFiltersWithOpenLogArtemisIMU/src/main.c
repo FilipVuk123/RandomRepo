@@ -10,8 +10,7 @@
 #include "complementary_filter.h"
 #include "orqa_clock.h"
 #include "kalman.h"
-#include "Madgwick.h"
-#include "Mahony.h"
+#include "MahonyMedgwick.h"
 
 float KALMAN_PREDICT_MS =  16.0f;
 float KALMAN_UPDATE_MS  = 100.0f;
