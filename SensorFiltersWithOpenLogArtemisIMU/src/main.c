@@ -10,6 +10,8 @@
 #include "complementary_filter.h"
 #include "orqa_clock.h"
 #include "kalman.h"
+#include "Madgwick.h"
+#include "Mahony.h"
 
 float KALMAN_PREDICT_MS =  16.0f;
 float KALMAN_UPDATE_MS  = 100.0f;
@@ -71,13 +73,13 @@ int main()
     // comp_filt.phiHat_rad = 0.0f;
     // comp_filt.thetaHat_rad = 0.0f;
 
-    orqa_clock_t predict_clock = orqa_time_now();
-    orqa_clock_t update_clock = orqa_time_now();
+    // orqa_clock_t predict_clock = orqa_time_now();
+    // orqa_clock_t update_clock = orqa_time_now();
 
-    kalman_data_t kalman;
-    float Q[2] = {0.000001, 0.000001}; 
-    float R[3] = {0.000011, 0.000011, 0.000011};
-    KalmanInit(&kalman, 0.000001f, Q, R);
+    // kalman_data_t kalman;
+    // float Q[2] = {0.000001, 0.000001}; 
+    // float R[3] = {0.000011, 0.000011, 0.000011};
+    // KalmanInit(&kalman, 0.000001f, Q, R);
 
     while (keepRunning)
     {
@@ -87,13 +89,13 @@ int main()
         //     camera.imu_state.mx, camera.imu_state.my, camera.imu_state.mz);
 
         // re-map of the IMU axis for EKF  
-        double kalman_ax, kalman_ay, kalman_az, kalman_gy, kalman_gx, kalman_gz;
-        kalman_ax = -camera.imu_state.ay;
-        kalman_ay = -camera.imu_state.ax;
-        kalman_az = -camera.imu_state.az;
-        kalman_gx = -camera.imu_state.gy;
-        kalman_gy = -camera.imu_state.gx;
-        kalman_gz = -camera.imu_state.gz;
+        // double kalman_ax, kalman_ay, kalman_az, kalman_gy, kalman_gx, kalman_gz;
+        // kalman_ax = -camera.imu_state.ay;
+        // kalman_ay = -camera.imu_state.ax;
+        // kalman_az = -camera.imu_state.az;
+        // kalman_gx = -camera.imu_state.gy;
+        // kalman_gy = -camera.imu_state.gx;
+        // kalman_gz = -camera.imu_state.gz;
 
 
         // ComplementaryFilterPitchRoll(&comp_filt, 
@@ -101,18 +103,43 @@ int main()
         //     camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, 0.01666f);
         // printf("Complementary filter: %f, %f\n", comp_filt.phiHat_rad * 180/3.14, comp_filt.thetaHat_rad * 180/3.14);
 
-        if (orqa_get_time_diff_msec(predict_clock, orqa_time_now()) >= KALMAN_PREDICT_MS)
-        {
-            KalmanPredict(&kalman, kalman_gx, kalman_gy, kalman_gz, KALMAN_PREDICT_MS / 1000.0f);
-            predict_clock = orqa_time_now();
-        }
+        // if (orqa_get_time_diff_msec(predict_clock, orqa_time_now()) >= KALMAN_PREDICT_MS)
+        // {
+        //     KalmanPredict(&kalman, kalman_gx, kalman_gy, kalman_gz, KALMAN_PREDICT_MS / 1000.0f);
+        //     predict_clock = orqa_time_now();
+        // }
 
-        if (orqa_get_time_diff_msec(update_clock, orqa_time_now()) >= KALMAN_UPDATE_MS)
-        {
-            KalmanUpdate(&kalman, kalman_ax, kalman_ay, kalman_az);
-            printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
-            update_clock = orqa_time_now();
-        }   
+        // if (orqa_get_time_diff_msec(update_clock, orqa_time_now()) >= KALMAN_UPDATE_MS)
+        // {
+        //     KalmanUpdate(&kalman, kalman_ax, kalman_ay, kalman_az);
+        //     printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
+        //     update_clock = orqa_time_now();
+        // }   
+
+        MahonyUpdateIMU(camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az);
+        // printf("%f %f %f %f\n", q1, q2, q3, q0);
+        // MadgwickUpdateIMU(camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az);
+	
+        double q2sqr = q2 * q2;
+
+        // roll (x-axis rotation)
+        double t0 = +2.0 * (q0 * q1 + q2 * q3);
+        double t1 = +1.0 - 2.0 * (q1 * q1 + q2sqr);
+        double pitch = atan2(t0, t1) * 180.0 / M_PI;
+
+        // pitch (y-axis rotation)
+        double t2 = +2.0 * (q0 * q2 - q3 * q1);
+        t2 = t2 > 1.0 ? 1.0 : t2;
+        t2 = t2 < -1.0 ? -1.0 : t2;
+        double roll = asin(t2) * 180.0 / M_PI;
+
+        // yaw (z-axis rotation)
+        double t3 = +2.0 * (q0 * q3 + q1 * q2);
+        double t4 = +1.0 - 2.0 * (q2sqr + q3 * q3);
+        double yaw = atan2(t3, t4) * 180.0 / M_PI;
+
+        printf("%f %f %f\n", yaw, pitch, roll);
+        usleep(1000 * 15);
     }
 printf("EXIT OK!\n");
     return 0;
