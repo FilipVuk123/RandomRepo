@@ -7,7 +7,9 @@
 #include <fcntl.h>
 #include <signal.h>
 #include "MahonyMedgwick.h"
-#include "math.h"
+#include <math.h>
+#include "fusion_math.h"
+
 typedef struct
 {
     double ax, ay, az, gx, gy, gz, mx, my, mz;
@@ -137,12 +139,12 @@ int main()
                 mZ_buf[b++] = ch;
         }
 
-        imu.ax = atof(aX_buf);
-        imu.ay = atof(aY_buf);
-        imu.az = atof(aZ_buf);
-        imu.gx = atof(gX_buf);
-        imu.gy = atof(gY_buf);
-        imu.gz = atof(gZ_buf);
+        imu.ax = atof(aX_buf)/1000.0f;
+        imu.ay = atof(aY_buf)/1000.0f;
+        imu.az = atof(aZ_buf)/1000.0f;
+        imu.gx = toRadians(atof(gX_buf));
+        imu.gy = toRadians(atof(gY_buf));
+        imu.gz = toRadians(atof(gZ_buf));
         imu.mx = atof(mX_buf);
         imu.my = atof(mY_buf);
         imu.mz = atof(mZ_buf);
@@ -153,8 +155,8 @@ int main()
                imu.gx, imu.gy, imu.gz,
                imu.mx, imu.my, imu.mz);
 
-        // MahonyUpdate(imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
-        MadgwickUpdate(imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
+        MahonyUpdate(imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
+        // MadgwickUpdate(imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
 
         double q2sqr = q2 * q2;
 
