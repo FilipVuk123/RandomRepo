@@ -2,7 +2,8 @@
 #define KALMAN_h
 #include <math.h>
 
-typedef struct {
+typedef struct
+{
     float phi_rad, theta_rad;
     float P[4], Q[2], R[3];
 } kalman_data_t;

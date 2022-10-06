@@ -12,9 +12,8 @@
 #include "kalman.h"
 #include "MahonyMedgwick.h"
 
-float KALMAN_PREDICT_MS =  16.0f;
-float KALMAN_UPDATE_MS  = 100.0f;
-
+float KALMAN_PREDICT_MS = 16.0f;
+float KALMAN_UPDATE_MS = 100.0f;
 
 typedef struct
 {
@@ -76,18 +75,18 @@ int main()
     // orqa_clock_t update_clock = orqa_time_now();
 
     // kalman_data_t kalman;
-    // float Q[2] = {0.000001, 0.000001}; 
+    // float Q[2] = {0.000001, 0.000001};
     // float R[3] = {0.000011, 0.000011, 0.000011};
     // KalmanInit(&kalman, 0.000001f, Q, R);
 
     while (keepRunning)
     {
-        // printf("A: %f, %f, %f, G: %f, %f, %f, M: %f, %f, %f\n", 
-        //     camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az, 
-        //     camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, 
+        // printf("A: %f, %f, %f, G: %f, %f, %f, M: %f, %f, %f\n",
+        //     camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az,
+        //     camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz,
         //     camera.imu_state.mx, camera.imu_state.my, camera.imu_state.mz);
 
-        // re-map of the IMU axis for EKF  
+        // re-map of the IMU axis for EKF
         // double kalman_ax, kalman_ay, kalman_az, kalman_gy, kalman_gx, kalman_gz;
         // kalman_ax = -camera.imu_state.ay;
         // kalman_ay = -camera.imu_state.ax;
@@ -96,8 +95,7 @@ int main()
         // kalman_gy = -camera.imu_state.gx;
         // kalman_gz = -camera.imu_state.gz;
 
-
-        // ComplementaryFilterPitchRoll(&comp_filt, 
+        // ComplementaryFilterPitchRoll(&comp_filt,
         //     camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az,
         //     camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, 0.01666f);
         // printf("Complementary filter: %f, %f\n", comp_filt.phiHat_rad * 180/3.14, comp_filt.thetaHat_rad * 180/3.14);
@@ -113,12 +111,12 @@ int main()
         //     KalmanUpdate(&kalman, kalman_ax, kalman_ay, kalman_az);
         //     printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
         //     update_clock = orqa_time_now();
-        // }   
+        // }
 
         MahonyUpdateIMU(camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az);
         // printf("%f %f %f %f\n", q1, q2, q3, q0);
         // MadgwickUpdateIMU(camera.imu_state.gx, camera.imu_state.gy, camera.imu_state.gz, camera.imu_state.ax, camera.imu_state.ay, camera.imu_state.az);
-	
+
         double q2sqr = q2 * q2;
 
         // roll (x-axis rotation)
@@ -140,7 +138,7 @@ int main()
         printf("%f %f %f\n", yaw, pitch, roll);
         usleep(1000 * 15);
     }
-printf("EXIT OK!\n");
+    printf("EXIT OK!\n");
     return 0;
 }
 
@@ -150,10 +148,11 @@ void *readDMSfromOpenLogAtremis(void *c_ptr)
 
     // Open the serial port. Change device path as needed (currently set to an standard FTDI USB-UART cable type device)
     int serial_port = open("/dev/ttyUSB0", O_RDWR); // Create new termios struc, we call it 'tty' for convention
-    if(serial_port < 0){
+    if (serial_port < 0)
+    {
         printf("Unable to open device! %d\n", serial_port);
     }
-    struct termios tty;                             // Read in existing settings, and handle any error
+    struct termios tty; // Read in existing settings, and handle any error
     if (tcgetattr(serial_port, &tty) != 0)
     {
         printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
