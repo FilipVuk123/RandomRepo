@@ -15,7 +15,7 @@
 float KALMAN_PREDICT_MS = 16.0f;
 float KALMAN_UPDATE_MS = 100.0f;
 
-#define MilliGtoMetarsPerSquareSecond ((float)0.000980665f)
+#define MilliG2MetarsPerSquareSecond ((float)0.000980665f)
 
 
 typedef struct
@@ -115,19 +115,19 @@ int main()
             read(serial_port, &ch, sizeof(ch));
         } while (ch != '\n');
     }
-    // comp_filter_t comp_filt;
-    // comp_filt.phiHat_rad = 0.0f;
-    // comp_filt.thetaHat_rad = 0.0f;
+    comp_filter_t comp_filt;
+    comp_filt.phiHat_rad = 0.0f;
+    comp_filt.thetaHat_rad = 0.0f;
 
-    orqa_clock_t predict_clock = orqa_time_now();
-    orqa_clock_t update_clock = orqa_time_now();
+    // orqa_clock_t predict_clock = orqa_time_now();
+    // orqa_clock_t update_clock = orqa_time_now();
 
-    kalman_data_t kalman;
-    float q_init = 0.001;
-    float r_init = 0.011;
-    float Q[2] = {q_init, q_init};
-    float R[3] = {r_init, r_init, r_init};
-    KalmanInit(&kalman, 0.001f, Q, R);
+    // kalman_data_t kalman;
+    // float q_init = 0.001;
+    // float r_init = 0.011;
+    // float Q[2] = {q_init, q_init};
+    // float R[3] = {r_init, r_init, r_init};
+    // KalmanInit(&kalman, 0.001f, Q, R);
 
     while (keepRunning)
     {
@@ -175,9 +175,9 @@ int main()
                 mZ_buf[b++] = ch;
         }
 
-        imu.ax = atof(aX_buf)*MilliGtoMetarsPerSquareSecond;
-        imu.ay = atof(aY_buf)*MilliGtoMetarsPerSquareSecond;
-        imu.az = atof(aZ_buf)*MilliGtoMetarsPerSquareSecond;
+        imu.ax = atof(aX_buf)*MilliG2MetarsPerSquareSecond;
+        imu.ay = atof(aY_buf)*MilliG2MetarsPerSquareSecond;
+        imu.az = atof(aZ_buf)*MilliG2MetarsPerSquareSecond;
         imu.gx = toRadians(atof(gX_buf));
         imu.gy = toRadians(atof(gY_buf));
         imu.gz = toRadians(atof(gZ_buf));
@@ -185,34 +185,25 @@ int main()
         imu.my = atof(mY_buf);
         imu.mz = atof(mZ_buf);
 
-        // printf("%f,%f,%f,%f,%f,%f\n",    imu.ax, imu.ay, imu.az,imu.gx, imu.gy, imu.gz);
+        // printf("%f,%f,%f,%f,%f,%f\n", imu.ax, imu.ay, imu.az,imu.gx, imu.gy, imu.gz);
 
-        // re-map of the IMU axis for EKF
-        double kalman_ax, kalman_ay, kalman_az, kalman_gy, kalman_gx, kalman_gz;
-        kalman_ax = -imu.ay;
-        kalman_ay = -imu.ax;
-        kalman_az = -imu.az;
-        kalman_gx = -imu.gy;
-        kalman_gy = -imu.gx;
-        kalman_gz = -imu.gz;
+        ComplementaryFilterPitchRoll(&comp_filt,
+            imu.ax, imu.ay, imu.az,
+            imu.gx, imu.gy, imu.gz, 0.01666f);
+        printf("Pitch, Roll: %f,%f\n", comp_filt.phiHat_rad * 180/3.14, comp_filt.thetaHat_rad * 180/3.14);
 
-        // ComplementaryFilterPitchRoll(&comp_filt,
-        //     imu.ax, imu.ay, imu.az,
-        //     imu.gx, imu.gy, imu.gz, 0.01666f);
-        // printf("Pitch, Roll: %f,%f\n", comp_filt.phiHat_rad * 180/3.14, comp_filt.thetaHat_rad * 180/3.14);
+        // if (orqa_get_time_diff_msec(predict_clock, orqa_time_now()) >= KALMAN_PREDICT_MS)
+        // {
+        //     KalmanPredict(&kalman, imu.gx, imu.gy, imu.gz, KALMAN_PREDICT_MS / 1000.0f);
+        //     predict_clock = orqa_time_now();
+        // }
 
-        if (orqa_get_time_diff_msec(predict_clock, orqa_time_now()) >= KALMAN_PREDICT_MS)
-        {
-            KalmanPredict(&kalman, kalman_gx, kalman_gy, kalman_gz, KALMAN_PREDICT_MS / 1000.0f);
-            predict_clock = orqa_time_now();
-        }
-
-        if (orqa_get_time_diff_msec(update_clock, orqa_time_now()) >= KALMAN_UPDATE_MS)
-        {
-            KalmanUpdate(&kalman, kalman_ax, kalman_ay, kalman_az);
-            printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
-            update_clock = orqa_time_now();
-        }
+        // if (orqa_get_time_diff_msec(update_clock, orqa_time_now()) >= KALMAN_UPDATE_MS)
+        // {
+        //     KalmanUpdate(&kalman, imu.ax, imu.ay, imu.az);
+        //     printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
+        //     update_clock = orqa_time_now();
+        // }
 
         
     }
