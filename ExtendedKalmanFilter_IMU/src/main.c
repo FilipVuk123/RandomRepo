@@ -115,19 +115,19 @@ int main()
             read(serial_port, &ch, sizeof(ch));
         } while (ch != '\n');
     }
-    comp_filter_t comp_filt;
-    comp_filt.phiHat_rad = 0.0f;
-    comp_filt.thetaHat_rad = 0.0f;
+    // comp_filter_t comp_filt;
+    // comp_filt.phiHat_rad = 0.0f;
+    // comp_filt.thetaHat_rad = 0.0f;
 
-    // orqa_clock_t predict_clock = orqa_time_now();
-    // orqa_clock_t update_clock = orqa_time_now();
+    orqa_clock_t predict_clock = orqa_time_now();
+    orqa_clock_t update_clock = orqa_time_now();
 
-    // kalman_data_t kalman;
-    // float q_init = 0.001;
-    // float r_init = 0.011;
-    // float Q[2] = {q_init, q_init};
-    // float R[3] = {r_init, r_init, r_init};
-    // KalmanInit(&kalman, 0.001f, Q, R);
+    kalman_data_t kalman;
+    float q_init = 0.001;
+    float r_init = 0.011;
+    float Q[2] = {q_init, q_init};
+    float R[3] = {r_init, r_init, r_init};
+    KalmanInit(&kalman, 0.001f, Q, R);
 
     while (keepRunning)
     {
@@ -187,23 +187,23 @@ int main()
 
         // printf("%f,%f,%f,%f,%f,%f\n", imu.ax, imu.ay, imu.az,imu.gx, imu.gy, imu.gz);
 
-        ComplementaryFilterPitchRoll(&comp_filt,
-            imu.ax, imu.ay, imu.az,
-            imu.gx, imu.gy, imu.gz, 0.01666f);
-        printf("Pitch, Roll: %f,%f\n", comp_filt.phiHat_rad * 180/3.14, comp_filt.thetaHat_rad * 180/3.14);
+        // ComplementaryFilterPitchRoll(&comp_filt,
+        //     imu.ax, imu.ay, imu.az,
+        //     imu.gx, imu.gy, imu.gz, 0.01666f);
+        // printf("Pitch, Roll: %f,%f\n", comp_filt.phiHat_rad * 180/3.14, comp_filt.thetaHat_rad * 180/3.14);
 
-        // if (orqa_get_time_diff_msec(predict_clock, orqa_time_now()) >= KALMAN_PREDICT_MS)
-        // {
-        //     KalmanPredict(&kalman, imu.gx, imu.gy, imu.gz, KALMAN_PREDICT_MS / 1000.0f);
-        //     predict_clock = orqa_time_now();
-        // }
+        if (orqa_get_time_diff_msec(predict_clock, orqa_time_now()) >= KALMAN_PREDICT_MS)
+        {
+            KalmanPredict(&kalman, imu.gx, imu.gy, imu.gz, KALMAN_PREDICT_MS / 1000.0f);
+            predict_clock = orqa_time_now();
+        }
 
-        // if (orqa_get_time_diff_msec(update_clock, orqa_time_now()) >= KALMAN_UPDATE_MS)
-        // {
-        //     KalmanUpdate(&kalman, imu.ax, imu.ay, imu.az);
-        //     printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
-        //     update_clock = orqa_time_now();
-        // }
+        if (orqa_get_time_diff_msec(update_clock, orqa_time_now()) >= KALMAN_UPDATE_MS)
+        {
+            KalmanUpdate(&kalman, imu.ax, imu.ay, imu.az);
+            printf("%f, %f\n", kalman.phi_rad*180/3.14, kalman.theta_rad*180/3.14);
+            update_clock = orqa_time_now();
+        }
 
         
     }

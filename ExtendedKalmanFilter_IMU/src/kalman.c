@@ -55,9 +55,14 @@ void KalmanPredict(kalman_data_t *kal, float gx, float gy, float gz, float T)
                      A[0] * kal->P[0] + A[1] * kal->P[1], A[2] * kal->P[0] + A[3] * kal->P[1],
                      A[0] * kal->P[2] + A[1] * kal->P[3], A[2] * kal->P[2] + A[3] * kal->P[3]};
 
-    float Ptmp[4] = {// 2 X 2
-                     AP[0] + PA_T[0] + kal->Q[0], AP[1] + PA_T[1],
-                     AP[2] + PA_T[2], AP[3] + PA_T[3] + kal->Q[1]};
+    float tmp[4] = {// 2 X 2
+                    AP[0] + PA_T[0] + kal->Q[0], AP[1] + PA_T[1],
+                    AP[2] + PA_T[2], AP[3] + PA_T[3] + kal->Q[1]};
+
+    float Ptmp[4] = { // 2 X 2
+                    T * tmp[0], T * tmp[1],
+                    T * tmp[2], T * tmp[3]
+    };
 
     kal->P[0] += Ptmp[0];
     kal->P[1] += Ptmp[1];
