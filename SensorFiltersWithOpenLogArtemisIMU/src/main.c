@@ -52,7 +52,7 @@ void *readDMSfromOpenLogAtremis(void *c_ptr);
 int main()
 {
     signal(SIGINT, intHandler);
-    FILE* fptr = fopen("Alpha_90%%.txt", "w+");
+    FILE* fptr = fopen("Alpha_10%%.txt", "w+");
     opengl_cam_t camera;
     camera.imu_state.ax = 0.0;
     camera.imu_state.ay = 0.0;

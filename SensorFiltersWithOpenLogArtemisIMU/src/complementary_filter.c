@@ -2,7 +2,7 @@
 #include <math.h>
 
 #define g ((float)9.81f)
-#define COMP_FILT_ALPHA ((float)0.90f)
+#define COMP_FILT_ALPHA ((float)0.10f)
 
 void ComplementaryFilterPitchRoll(comp_filter_t *comp_filter, double ax, double ay, double az, double gx, double gy, double gz, float T)
 {

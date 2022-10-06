@@ -24,8 +24,6 @@ void intHandler(int dummy)
     keepRunning = 0;
 }
 
-int got_data = 0;
-
 void *readDMSfromOpenLogAtremis(void *c_ptr);
 
 int main()
@@ -151,10 +149,7 @@ int main()
         imu.my = atof(mY_buf);
         imu.mz = atof(mZ_buf);
 
-        printf("A: %f, %f, %f, G: %f, %f, %f, M: %f, %f, %f\n",
-               imu.ax, imu.ay, imu.az,
-               imu.gx, imu.gy, imu.gz,
-               imu.mx, imu.my, imu.mz);
+        // printf("%f,%f,%f,%f,%f,%f\n", imu.ax, imu.ay, imu.az, imu.gx, imu.gy, imu.gz);
 
         // MahonyUpdate(imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
         MadgwickUpdate(imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
@@ -177,7 +172,7 @@ int main()
         double t4 = +1.0 - 2.0 * (q2sqr + q3 * q3);
         double yaw = atan2(t3, t4) * 180.0 / M_PI;
 
-        printf("%f %f %f\n", yaw, pitch, roll);
+        printf("%f,%f,%f\n", yaw, pitch, roll);
     }
 exitSerial:
     close(serial_port);
