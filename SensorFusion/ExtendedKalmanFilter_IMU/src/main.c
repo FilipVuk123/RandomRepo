@@ -11,7 +11,7 @@
 #include "kalman.h"
 #include "fusion_math.h"
 
-#define KALMAN 0
+#define KALMAN 1
 #define COMPLEMENTARY 1
 
 float KALMAN_PREDICT_MS = 16.0f;
