@@ -5,41 +5,12 @@
 
 void KalmanInit(kalman_data_t *kal, float Pinit, float *Q, float *R)
 {
-    kal->phi_rad = 0.0f;
-    kal->theta_rad = 0.0f;
-    // 2 X 2
-    kal->P[0] = Pinit;
-    kal->P[1] = 0.0f;
-    kal->P[2] = 0.0f;
-    kal->P[3] = Pinit;
-    // 2 X 2 -> diagonal
-    kal->Q[0] = Q[0];
-    kal->Q[1] = Q[1];
-    // 3 X 3 -> diagonal
-    kal->R[0] = R[0];
-    kal->R[1] = R[1];
-    kal->R[2] = R[2];
+    
 }
 
 void KalmanPredict(kalman_data_t *kal, float gx, float gy, float gz, float T)
 {
-    float p = gx;
-    float q = gy;
-    float r = gz;
-
-    float sp = sin(kal->phi_rad);
-    float cp = cos(kal->phi_rad);
-    float tt = tan(kal->theta_rad);
-
-    // x = x + T f(x, u)
-    kal->phi_rad += T * (p + tt * (q * sp + r * cp));
-    kal->theta_rad += T * (q * cp - r * sp);
-
-    sp = sin(kal->phi_rad);
-    cp = cos(kal->phi_rad);
-    float st = sin(kal->theta_rad);
-    float ct = cos(kal->theta_rad);
-    tt = st / ct;
+    
 
     // jacobian f(x, u)
     float A[4] = {
@@ -73,10 +44,6 @@ void KalmanPredict(kalman_data_t *kal, float gx, float gy, float gz, float T)
 void KalmanUpdate(kalman_data_t *kal, float ax, float ay, float az)
 {
 
-    float sp = sin(kal->phi_rad);
-    float cp = cos(kal->phi_rad);
-    float st = sin(kal->theta_rad);
-    float ct = cos(kal->theta_rad);
 
     // h(x, u) output
     float h[3] = {

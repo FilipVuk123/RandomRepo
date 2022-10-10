@@ -6,17 +6,12 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <signal.h>
-#include "complementary_filter.h"
 #include "orqa_clock.h"
 #include "kalman.h"
 #include "fusion_math.h"
 
-#define KALMAN 1
-#define COMPLEMENTARY 1
-
 float KALMAN_PREDICT_MS = 16.0f;
 float KALMAN_UPDATE_MS = 100.0f;
-float COMPLEMENTARY_MS = 20.0f;
 
 #define MilliG2MetarsPerSecondsSquare ((float)0.000980665f)
 
@@ -115,13 +110,7 @@ int main()
             read(serial_port, &ch, sizeof(ch));
         } while (ch != '\n');
     }
-#if COMPLEMENTARY
-    comp_filter_t comp_filt;
-    comp_filt.phiHat_rad = 0.0f;
-    comp_filt.thetaHat_rad = 0.0f;
-    orqa_clock_t clock = orqa_time_now();
-#endif
-#if KALMAN
+
     orqa_clock_t predict_clock = orqa_time_now();
     orqa_clock_t update_clock = orqa_time_now();
 
@@ -131,7 +120,6 @@ int main()
     float Q[2] = {q_init, q_init};
     float R[3] = {r_init, r_init, r_init};
     KalmanInit(&kalman, 0.1f, Q, R);
-#endif
     while (keepRunning)
     {
         char aX_buf[10] = "\0";
@@ -188,17 +176,6 @@ int main()
         imu.my = atof(mY_buf);
         imu.mz = atof(mZ_buf);
 
-#if COMPLEMENTARY
-        if (orqa_get_time_diff_msec(clock, orqa_time_now()) > COMPLEMENTARY_MS){
-            clock = orqa_time_now();
-            ComplementaryFilterPitchRoll(&comp_filt,
-                                        imu.ax, imu.ay, imu.az,
-                                        imu.gx, imu.gy, imu.gz, COMPLEMENTARY_MS / 1000.0f);
-            printf("Pitch, Roll: %f,%f\n", comp_filt.phiHat_rad * 180.0f / 3.14f, comp_filt.thetaHat_rad * 180.0f / 3.14f);
-        }
-#endif
-
-#if KALMAN
         if (orqa_get_time_diff_msec(predict_clock, orqa_time_now()) >= KALMAN_PREDICT_MS)
         {
             KalmanPredict(&kalman, imu.gx, imu.gy, imu.gz, KALMAN_PREDICT_MS / 1000.0f);
@@ -212,7 +189,6 @@ int main()
             update_clock = orqa_time_now();
         }
 
-#endif
     }
     printf("EXIT OK!\n");
 exitSerial:
