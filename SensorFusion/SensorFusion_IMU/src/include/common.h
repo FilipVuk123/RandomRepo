@@ -1,7 +1,7 @@
 #ifndef common_h
 #define common_h
 
-#define comp_filter_alpha ((float) 0.05)
+#define comp_filter_alpha ((float) 0.1)
 #define MilliGtoMetarsPerSquareSecond ((float)0.000980665f)
 
 typedef struct 

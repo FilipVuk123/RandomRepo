@@ -17,15 +17,18 @@ void complementary_filter(quat_t *q, const float ax, const float ay, const float
     pitch = atan2(ay, az);
     roll = atan2(-ax, sqrt(ay*ay + az*az));
 
+    // yaw = atan(sqrt(ay*ay + ax*ax) / az); this is a meme
+    
     if (mx != 0.0, my != 0.0, mz != 0.0){
         yaw = atan2(mz*sin(pitch) - my*cos(pitch), mx*cos(roll) + my*sin(roll)*sin(pitch) + mz*sin(roll)*cos(pitch));
     }
-
+    // We transform the roll-pitch-yaw angles to a quaternion representation
     qaw = cos(pitch/2)*cos(roll/2)*cos(yaw/2) + sin(pitch/2)*sin(roll/2)*sin(yaw/2);
     qax = sin(pitch/2)*cos(roll/2)*cos(yaw/2) - cos(pitch/2)*sin(roll/2)*sin(yaw/2);
     qay = cos(pitch/2)*sin(roll/2)*cos(yaw/2) + sin(pitch/2)*cos(roll/2)*sin(yaw/2);
     qaz = cos(pitch/2)*cos(roll/2)*sin(yaw/2) - sin(pitch/2)*sin(roll/2)*cos(yaw/2);
 
+    // Finally, after each orientation is estimated independently, they are fused with the complementary filter.
     q->w = (1.0 - comp_filter_alpha)*qgw + comp_filter_alpha*qaw;
     q->x = (1.0 - comp_filter_alpha)*qgx + comp_filter_alpha*qax;
     q->y = (1.0 - comp_filter_alpha)*qgy + comp_filter_alpha*qay;

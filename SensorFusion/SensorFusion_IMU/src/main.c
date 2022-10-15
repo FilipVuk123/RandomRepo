@@ -152,9 +152,9 @@ int main()
 
         // printf("%f,%f,%f,%f,%f,%f\n", imu.ax, imu.ay, imu.az, imu.gx, imu.gy, imu.gz);
 
-        MahonyUpdate(&q, imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
+        // MahonyUpdate(&q, imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
         // MadgwickUpdate(&q, imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
-        // complementary_filter(&q, imu.ax, imu.ay, imu.az, imu.gx, imu.gy, imu.gz, imu.mx, imu.my, imu.mz, 1.0f/60.0f);
+        complementary_filter(&q, imu.ax, imu.ay, imu.az, imu.gx, imu.gy, imu.gz, imu.mx, imu.my, imu.mz, 1.0f/60.0f);
 
         float q1, q2, q3, q0;
         q1 = q.x;
