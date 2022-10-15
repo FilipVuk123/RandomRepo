@@ -9,8 +9,8 @@
 #include "MahonyMedgwick.h"
 #include <math.h>
 #include "fusion_math.h"
-
-#define MilliGtoMetarsPerSquareSecond ((float)0.000980665f)
+#include "common.h"
+#include "complementary_filter.h"
 
 typedef struct
 {
@@ -23,8 +23,6 @@ void intHandler(int dummy)
     (void)(dummy);
     keepRunning = 0;
 }
-
-void *readDMSfromOpenLogAtremis(void *c_ptr);
 
 int main()
 {
@@ -93,6 +91,9 @@ int main()
         } while (ch != '\n');
     }
 
+    quat_t q;
+    q.x = 0.0; q.y = 0.0; q.z = 0.0; q.w = 1.0;
+
     while (keepRunning)
     {
         char aX_buf[10] = "\0";
@@ -151,9 +152,15 @@ int main()
 
         // printf("%f,%f,%f,%f,%f,%f\n", imu.ax, imu.ay, imu.az, imu.gx, imu.gy, imu.gz);
 
-        // MahonyUpdate(imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
-        MadgwickUpdate(imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
+        MahonyUpdate(&q, imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
+        // MadgwickUpdate(&q, imu.gx, imu.gy, imu.gz, imu.ax, imu.ay, imu.az, 0.0, 0.0, 0.0);
+        // complementary_filter(&q, imu.ax, imu.ay, imu.az, imu.gx, imu.gy, imu.gz, imu.mx, imu.my, imu.mz, 1.0f/60.0f);
 
+        float q1, q2, q3, q0;
+        q1 = q.x;
+        q2 = q.y;
+        q3 = q.z;
+        q0 = q.w;
         double q2sqr = q2 * q2;
 
         // roll (x-axis rotation)
