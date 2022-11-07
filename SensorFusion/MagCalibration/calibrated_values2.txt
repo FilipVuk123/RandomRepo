@@ -1,0 +1,26 @@
+Average magnitude of 3012 vectors (default Hm) = 34.062532
+
+Expected norm of local field vector Hm? (0 for default above) 0
+
+Combined bias vector B:
+   24.67     2.44   -27.14 
+
+Correction matrix Ainv, using Hm=34.062532:
+  1.01120   0.01287   0.12340
+  0.01287   1.08755   0.08850
+  0.12340   0.08850   0.95325
+
+Where Hcalc = Ainv*(H-B)
+
+Code initialization statements...
+
+ float B {   24.67,    2.44,  -27.14};
+
+ float Ainv {{  1.01120,  0.01287,  0.12340},
+             {  0.01287,  1.08755,  0.08850},
+             {  0.12340,  0.08850,  0.95325}};
+ output filename for corrected values calibrated_outputs_Mag_raw2.csv
+
+RMS corrected vector length 34.062532
+
+RMS residual -0.000000
