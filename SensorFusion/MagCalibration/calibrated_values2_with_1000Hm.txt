@@ -1,0 +1,24 @@
+Average magnitude of 5141 vectors (default Hm) = 52.643172
+
+Expected norm of local field vector Hm? (0 for default above) 1000
+
+Combined bias vector B:
+   18.89    -8.25   -34.08 
+
+Correction matrix Ainv, using Hm=1000.000000:
+ 22.26985  -0.20987   0.00847
+ -0.20987  21.79460  -0.12657
+  0.00847  -0.12657  22.31620
+
+Where Hcalc = Ainv*(H-B)
+
+Code initialization statements...
+
+ float B {   18.89,   -8.25,  -34.08};
+
+ float Ainv {{ 22.26985, -0.20987,  0.00847},
+             { -0.20987, 21.79460, -0.12657},
+             {  0.00847, -0.12657, 22.31620}};
+ output filename for corrected values text     
+
+RMS corrected vector length 1000.000000

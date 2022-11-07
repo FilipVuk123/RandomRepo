@@ -30,11 +30,16 @@ double toDegrees(double x)
     return x * 180.f / M_PI;
 }
 
-float B[] = {18.89, -8.25, -34.08};
 
 float Ainv[][3] = {{1.17236, -0.01105, 0.00045},
                    {-0.01105, 1.14734, -0.00666},
                    {0.00045, -0.00666, 1.17480}};
+
+// float Ainv[][3] = {{ 22.26985, -0.20987,  0.00847},
+//              { -0.20987, 21.79460, -0.12657},
+//              {  0.00847, -0.12657, 22.31620}};
+
+float B[] = {   18.89,   -8.25,  -34.08};
 
 int main()
 {
@@ -171,10 +176,14 @@ int main()
         calib_my = Ainv[1][0] * imu.mx + Ainv[1][1] * imu.my + Ainv[1][2] * imu.mz;
         calib_mz = Ainv[2][0] * imu.mx + Ainv[2][1] * imu.my + Ainv[2][2] * imu.mz;
 
+        printf("%f, %f, %f\n", calib_mx, calib_my, calib_mz);
+
         float heading = toDegrees(atan2(calib_my, calib_mx)) - 90.0f;
         if (heading < 0)
             heading = heading + 360;
         printf("%f\n", heading);
+
+        printf("%f\n", sqrt(calib_mx*calib_mx + calib_my*calib_my + calib_mz*calib_mz));
     }
 exitSerial:
     close(serial_port);

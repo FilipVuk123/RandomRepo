@@ -30,7 +30,7 @@ double toDegrees(double x){
 
 
 int main(){
-    FILE* fptr = fopen("Mag_raw2.csv", "w+");
+    FILE* fptr = fopen("Mag_raw3.csv", "w+");
     // fprintf(fptr, "mx, my, mz\n");
     signal(SIGINT, intHandler);
     IMU_state imu;
@@ -154,8 +154,8 @@ int main(){
         imu.my = atof(mY_buf);
         imu.mz = atof(mZ_buf);
 
-        fprintf(fptr, "%f, %f, %f\n", imu.mx, imu.my, imu.mz);
-        // printf("%f, %f, %f\n", imu.mx, imu.my, imu.mz);
+        // fprintf(fptr, "%f, %f, %f\n", imu.mx, imu.my, imu.mz);
+        printf("%f, %f, %f\n", imu.mx, imu.my, imu.mz);
         float heading = toDegrees(atan2(imu.my, imu.mx)) - 90.0f;
         if (heading < 0) heading = heading + 360;
         printf("%f\n", heading);
