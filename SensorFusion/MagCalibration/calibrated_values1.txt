@@ -19,7 +19,7 @@ Code initialization statements...
  float Ainv {{  1.04942,  0.00011, -0.00772},
              {  0.00011,  1.01870, -0.00296},
              { -0.00772, -0.00296,  1.00830}};
- output filename for corrected values calibrated_outputs_Mag_raw1.csv
+ output filename for corrected values calibrated_output_Mag_raw.csv
 
 RMS corrected vector length 46.718107
 
