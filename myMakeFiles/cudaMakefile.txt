@@ -1,5 +1,5 @@
 NVCC=nvcc
-CXX=g++
+
 NVCCFLAGS := -Iinclude
 CXXFLAGS := -Iinclude
 LDFLAGS  := -lcuda
@@ -9,7 +9,7 @@ SRC_DIR:=src
 BIN_DIR:=bin
 OBJ_DIR:=bin/obj
 
-EXE:=$(BIN_DIR)/Vegvisir
+EXE:=$(BIN_DIR)/program
 NVCCSRC:=$(wildcard $(SRC_DIR)/*.cu)
 SRCCXX:=$(wildcard $(SRC_DIR)/*.cpp)
 OBJ:=$(patsubst $(SRC_DIR)/%.cu, $(OBJ_DIR)/%.o, $(NVCCSRC))
@@ -36,4 +36,4 @@ clean:
 	rm  -r bin/*
 .PHONY: start
 start:
-	./bin/Vegvisir
+	./${EXE}
